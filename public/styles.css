@@ -1,0 +1,34 @@
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+}
+
+#game-board {
+  display: flex;
+  justify-content: center;
+}
+
+select {
+  width: 50px;
+  height: 50px;
+  background-color: transparent;
+  border: none;
+  font-size: 24px;
+  text-align: center;
+}
+
+canvas {
+  display: block;
+  margin: 20px auto;
+  border: 1px solid #000;
+}
+
+.correct {
+  color: #fff;
+  background-color: #000;
+}
+
+.incorrect {
+  color: #000;
+  background-color: #fff;
+}
