@@ -1,7 +1,9 @@
 body {
   font-family: Arial, sans-serif;
   text-align: center;
+  background-color: #40E0D0;
 }
+
 
 #game-board {
   display: flex;
