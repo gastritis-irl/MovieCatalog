@@ -7,6 +7,10 @@ const ctx = feedbackCanvas.getContext('2d');
 const colors = ['R', 'G', 'B', 'Y', 'P', 'O'];
 const age = 25; // A játékos életkora
 
+let attempts = 0;
+
+playerInfo.textContent = 'Játékos: 25 éves';
+
 function drawFeedback(correct, incorrect) {
   const yPos = attempts * 25;
   ctx.fillStyle = '#000';
@@ -19,6 +23,14 @@ function drawFeedback(correct, incorrect) {
   }
 }
 
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
 function generateSecretColors() {
   const secret = [];
   const shuffledColors = shuffleArray(colors.slice());
@@ -28,18 +40,7 @@ function generateSecretColors() {
   return secret;
 }
 
-function shuffleArray(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
-}
-
 const secretColors = generateSecretColors();
-let attempts = 0;
-
-playerInfo.textContent = 'Játékos: 25 éves';
 
 for (let i = 0; i < 4; i++) {
   const select = document.createElement('select');
@@ -56,12 +57,6 @@ function makeGuess() {
   for (let i = 0; i < 4; i++) {
     guess.push(gameBoard.children[i].value);
   }
-
-
-const button = document.createElement('button');
-button.textContent = 'Tippelés';
-button.onclick = makeGuess;
-gameBoard.appendChild(button);
 
   let correct = 0;
   let incorrect = 0;
@@ -103,3 +98,7 @@ gameBoard.appendChild(button);
   }
 }
 
+const button = document.createElement('button');
+button.textContent = 'Tippelés';
+button.onclick = makeGuess;
+gameBoard.appendChild(button);
