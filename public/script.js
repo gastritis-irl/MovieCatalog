@@ -44,7 +44,7 @@ const secretColors = generateSecretColors();
 
 for (let i = 0; i < 4; i++) {
   const select = document.createElement('select');
-  colors.forEach(color => {
+  colors.forEach((color) => {
   const option = document.createElement('option');
   option.textContent = color;
   select.appendChild(option);
