@@ -7,25 +7,17 @@ const ctx = feedbackCanvas.getContext('2d');
 const colors = ['R', 'G', 'B', 'Y', 'P', 'O'];
 const age = 25; // A játékos életkora
 
-let secretColors = generateSecretColors();
-let attempts = 0;
-
-playerInfo.textContent = `Játékos: 25 éves`;
-
-for (let i = 0; i < 4; i++) {
-  const select = document.createElement('select');
-  for (const color of colors) {
-    const option = document.createElement('option');
-    option.textContent = color;
-    select.appendChild(option);
+function drawFeedback(correct, incorrect) {
+  const yPos = attempts * 25;
+  ctx.fillStyle = '#000';
+  for (let i = 0; i < correct; i++) {
+    ctx.fillRect(i * 25, yPos, 20, 20);
   }
-  gameBoard.appendChild(select);
+  ctx.fillStyle = '#fff';
+  for (let i = 0; i < incorrect; i++) {
+    ctx.fillRect((i + correct) * 25, yPos, 20, 20);
+  }
 }
-
-const button = document.createElement('button');
-button.textContent = 'Tippelés';
-button.onclick = makeGuess;
-gameBoard.appendChild(button);
 
 function generateSecretColors() {
   const secret = [];
@@ -44,11 +36,32 @@ function shuffleArray(array) {
   return array;
 }
 
+const secretColors = generateSecretColors();
+let attempts = 0;
+
+playerInfo.textContent = 'Játékos: 25 éves';
+
+for (let i = 0; i < 4; i++) {
+  const select = document.createElement('select');
+  for (const color of colors) {
+    const option = document.createElement('option');
+    option.textContent = color;
+    select.appendChild(option);
+  }
+  gameBoard.appendChild(select);
+}
+
 function makeGuess() {
   const guess = [];
   for (let i = 0; i < 4; i++) {
     guess.push(gameBoard.children[i].value);
   }
+
+
+const button = document.createElement('button');
+button.textContent = 'Tippelés';
+button.onclick = makeGuess;
+gameBoard.appendChild(button);
 
   let correct = 0;
   let incorrect = 0;
@@ -90,14 +103,3 @@ function makeGuess() {
   }
 }
 
-function drawFeedback(correct, incorrect) {
-  const yPos = attempts * 25;
-  ctx.fillStyle = '#000';
-  for (let i = 0; i < correct; i++) {
-    ctx.fillRect(i * 25, yPos, 20, 20);
-  }
-  ctx.fillStyle = '#fff';
-  for (let i = 0; i < incorrect; i++) {
-    ctx.fillRect((i + correct) * 25, yPos, 20, 20);
-  }
-}
