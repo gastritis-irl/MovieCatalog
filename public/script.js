@@ -45,10 +45,10 @@ const secretColors = generateSecretColors();
 for (let i = 0; i < 4; i++) {
   const select = document.createElement('select');
   colors.forEach((color) => {
-  const option = document.createElement('option');
-  option.textContent = color;
-  select.appendChild(option);
-});
+    const option = document.createElement('option');
+    option.textContent = color;
+    select.appendChild(option);
+  });
   gameBoard.appendChild(select);
 }
 
@@ -84,9 +84,9 @@ function makeGuess() {
   drawFeedback(correct, incorrect);
   attempts++;
 
-const button = document.createElement('button');
-button.textContent = 'Tippelés';
-button.onclick = makeGuess;
+  const button = document.createElement('button');
+  button.textContent = 'Tippelés';
+  button.onclick = makeGuess;
 
   if (correct === 4) {
     result.textContent = `Nyertél! ${attempts} lépésből találtad ki.`;
