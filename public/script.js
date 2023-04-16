@@ -5,21 +5,29 @@ const feedbackCanvas = document.getElementById('feedback-canvas');
 const ctx = feedbackCanvas.getContext('2d');
 
 const colors = ['R', 'G', 'B', 'Y', 'P', 'O'];
-const age = 25; // A játékos életkora
-
 let attempts = 0;
 
-playerInfo.textContent = 'Játékos: 25 éves';
+const ageForm = document.getElementById('age-form');
+const ageInput = document.getElementById('age-input');
+
+let age = null;
+
+ageForm.addEventListener('submit', (event) => {
+  event.preventDefault();
+  age = parseInt(ageInput.value, 10);
+  playerInfo.textContent = `Játékos: ${age} éves`;
+  ageForm.style.display = 'none';
+});
 
 function drawFeedback(correct, incorrect) {
   const yPos = attempts * 25;
-  ctx.fillStyle = '#000';
   for (let i = 0; i < correct; i++) {
+    ctx.fillStyle = '#fff'; // Fehér szín a helyes találatokhoz
     ctx.fillRect(i * 25, yPos, 20, 20);
   }
-  ctx.fillStyle = '#fff';
-  for (let i = 0; i < incorrect; i++) {
-    ctx.fillRect((i + correct) * 25, yPos, 20, 20);
+  for (let i = correct; i < correct + incorrect; i++) {
+    ctx.fillStyle = '#000'; // Fekete szín a helytelen találatokhoz
+    ctx.fillRect(i * 25, yPos, 20, 20);
   }
 }
 
@@ -52,41 +60,53 @@ for (let i = 0; i < 4; i++) {
   gameBoard.appendChild(select);
 }
 
+function getCorrectIndices(guess, colorsToGuess) {
+  const correctIndices = new Set();
+  for (let i = 0; i < 4; i++) {
+    if (guess[i] === colorsToGuess[i]) {
+      correctIndices.add(i);
+    }
+  }
+  return correctIndices;
+}
+
+function countIncorrectGuesses(guess, colorsToGuess, correctIndices) {
+  let incorrect = 0;
+  const guessColorCount = {};
+  const colorsToGuessCount = {};
+
+  for (let i = 0; i < 4; i++) {
+    if (!correctIndices.has(i)) {
+      guessColorCount[guess[i]] = (guessColorCount[guess[i]] || 0) + 1;
+      colorsToGuessCount[colorsToGuess[i]] = (colorsToGuessCount[colorsToGuess[i]] || 0) + 1;
+    }
+  }
+
+  Object.keys(guessColorCount).forEach((color) => {
+    if (colorsToGuessCount[color]) {
+      incorrect += Math.min(guessColorCount[color], colorsToGuessCount[color]);
+    }
+  });
+
+  return incorrect;
+}
+
+const button = document.createElement('button');
+
 function makeGuess() {
   const guess = [];
   for (let i = 0; i < 4; i++) {
     guess.push(gameBoard.children[i].value);
   }
 
-  let correct = 0;
-  let incorrect = 0;
-  const usedIndices = new Set();
-
-  for (let i = 0; i < 4; i++) {
-    if (guess[i] === secretColors[i]) {
-      correct++;
-      usedIndices.add(i);
-    }
-  }
-
-  for (let i = 0; i < 4; i++) {
-    if (!usedIndices.has(i)) {
-      for (let j = 0; j < 4; j++) {
-        if (!usedIndices.has(j) && guess[i] === secretColors[j]) {
-          incorrect++;
-          usedIndices.add(j);
-          break;
-        }
-      }
-    }
-  }
+  const correctIndices = getCorrectIndices(guess, secretColors);
+  const correct = correctIndices.size;
+  const incorrect = countIncorrectGuesses(guess, secretColors, correctIndices);
 
   drawFeedback(correct, incorrect);
   attempts++;
 
-  const button = document.createElement('button');
-  button.textContent = 'Tippelés';
-  button.onclick = makeGuess;
+  const guessButton = button;
 
   if (correct === 4) {
     result.textContent = `Nyertél! ${attempts} lépésből találtad ki.`;
@@ -95,14 +115,16 @@ function makeGuess() {
     } else {
       result.textContent += ' Gratulálunk!';
     }
-    button.disabled = true;
-  } else if (attempts === 8) {
+    guessButton.disabled = true;
+    return; // Hozzáadjuk ezt a sort, hogy megálljon a függvény végrehajtása, ha a játékos nyert
+  }
+
+  if (attempts === 8) {
     result.textContent = 'Vesztettél! Nem találtad ki időben.';
-    button.disabled = true;
+    guessButton.disabled = true;
   }
 }
 
-const button = document.createElement('button');
 button.textContent = 'Tippelés';
 button.onclick = makeGuess;
 gameBoard.appendChild(button);

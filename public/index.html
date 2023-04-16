@@ -8,7 +8,13 @@
   </head>
   <body>
     <h1>Six from Four Game</h1>
-    <div id="player-info"></div>
+    <div id="player-info">
+      <form id="age-form">
+        <label for="age-input">Játékos életkora: </label>
+        <input type="number" id="age-input" min="1" max="150" required />
+        <button type="submit">Rögzítés</button>
+      </form>
+    </div>
     <div id="game-board"></div>
     <div id="result"></div>
     <canvas id="feedback-canvas" width="200" height="200"></canvas>
