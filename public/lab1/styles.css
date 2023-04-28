@@ -1,5 +1,5 @@
 body {
-    background-image: url("images/background.jpg");
+    background-image: url("images/backg.jpg");
     background-repeat: repeat-x;
     background-attachment: scroll;
     background-size: auto;
@@ -71,7 +71,7 @@ table tr:nth-child(even) {
 }
 
 .column {
-    color: aliceblue;
+    color: rgb(2, 137, 255);
     display: inline-block;
     width: calc(100% / 3);
     vertical-align: top;
