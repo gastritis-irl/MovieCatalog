@@ -17,7 +17,7 @@
       <h1>Technológiai témák</h1>
     </header>
     <nav>
-      <ul>
+      <ul class="general-style">
         <li><a href="ai.html">Mesterséges Intelligencia</a></li>
         <li><a href="bitcoin.html">Bitcoin</a></li>
         <li><a href="ethereum.html">Ethereum</a></li>
@@ -27,8 +27,8 @@
     </nav>
     <main>
       <article>
-        <h2 class="h2-custom1">Üdvözöljük a technológiai témák oldalán!</h2>
-        <p>Ezen az oldalon számos technológiai témával foglalkozunk, mint például:</p>
+        <h2 class="style1">Üdvözöljük a technológiai témák oldalán!</h2>
+        <p class="general-style">Ezen az oldalon számos technológiai témával foglalkozunk, mint például:</p>
         <ol>
           <!-- Sorszámozott lista -->
           <li>Mesterséges Intelligencia</li>
@@ -36,11 +36,23 @@
           <li>Virtuális Valóság</li>
           <li>Webfejlesztés</li>
         </ol>
-        <p>Válasszon a fenti témák közül és merüljön el a technológia világában!</p>
+        <p class="general-style">Válasszon a fenti témák közül és merüljön el a technológia világában!</p>
       </article>
+      <!-- Div elem elválasztása táblázat használata nélkül -->
+      <div>
+        <div class="column">
+            <p>Column 1 content goes here...</p>
+        </div>
+        <div class="column">
+            <p>Column 2 content goes here...</p>
+        </div>
+        <div class="column">
+            <p>Column 3 content goes here...</p>
+        </div>
+      </div>
       <article>
-        <h2>Hivatkozások</h2>
-        <ul>
+        <h2 class="style2">Hivatkozások</h2>
+        <ul class="general-style">
           <!-- Sorszám nélküli lista -->
           <li>
             <a href="https://www.example.com" target="_blank">Abszolút elérési út</a>
@@ -55,9 +67,36 @@
           <img src="images/example.jpg" alt="Példa kép" >
         </a>
       </article>
+      <table>
+        <tr>
+          <th>Header 1</th>
+          <th>Header 2</th>
+          <th>Header 3</th>
+        </tr>
+        <tr>
+          <td>Row 1, Column 1</td>
+          <td>Row 1, Column 2</td>
+          <td>Row 1, Column 3</td>
+        </tr>
+        <tr>
+          <td>Row 2, Column 1</td>
+          <td>Row 2, Column 2</td>
+          <td>Row 2, Column 3</td>
+        </tr>
+        <tr>
+          <td>Row 3, Column 1</td>
+          <td>Row 3, Column 2</td>
+          <td>Row 3, Column 3</td>
+        </tr>
+        <tr>
+          <td>Row 4, Column 1</td>
+          <td>Row 4, Column 2</td>
+          <td>Row 4, Column 3</td>
+        </tr>
+      </table>
     </main>
     <footer id="footer">
-      <p>Szerző: Bardocz Ferencz-Csaba</p>
+      <p class="style">Szerző: Bardocz Ferencz-Csaba</p>
       <p><a href="#footer">Vissza a lap tetejére</a></p>
       <!-- Hivatkozás az oldalon belüli részhez -->
     </footer>
