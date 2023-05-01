@@ -13,6 +13,8 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
+app.use(express.static('public/uploads'));
+
 app.use(express.json());
 
 // Set up multer storage destination and filename
@@ -70,8 +72,7 @@ app.post('/movies/:movieId/reviews', async (req, res) => {
   }
 });
 
-app.get('/search-movies', async (req, res) => {
-  // Implement logic for searching movies
+app.get('/movies', async (req, res) => {
   try {
     const { title, genre, minYear, maxYear } = req.query;
     const query = Movie.find();
@@ -82,9 +83,28 @@ app.get('/search-movies', async (req, res) => {
     if (maxYear) query.where('releaseYear').lte(maxYear);
 
     const movies = await query.exec();
+    console.log('Found Movies:', movies);
     res.json({ success: true, data: movies });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
+  }
+});
+
+app.get('/reviews', async (req, res) => {
+  const { movieId } = req.query;
+
+  if (!movieId) {
+    return res.status(400).json({ success: false, message: 'Movie ID is required' });
+  }
+
+  try {
+    // Fetch reviews from the database based on the movieId
+    const reviews = await Review.find({ movieId });
+
+    return res.json({ success: true, data: reviews });
+  } catch (error) {
+    console.error('Error fetching reviews:', error);
+    return res.status(500).json({ success: false, message: 'Error fetching reviews' });
   }
 });
 
