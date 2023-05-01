@@ -7,15 +7,21 @@
 
 body {
     font-family: 'Arial', sans-serif;
-    background-image: 'img/background.png';
+    background-image: url("img/bg2.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    background-attachment: fixed;
     color: #333;
     line-height: 1.6;
 }
+
 
 h1,
 h2,
 h3 {
     margin-bottom: 1rem;
+    color: #e71414;
 }
 
 /* Container */
@@ -35,6 +41,7 @@ form {
 form label {
     font-weight: bold;
     margin-bottom: 0.5rem;
+    color: #32ebcc;
 }
 
 form input,
@@ -42,6 +49,9 @@ form textarea {
     margin-bottom: 1rem;
     padding: 0.5rem;
     border: 1px solid #ccc;
+    color: #32ebcc;
+    max-width: 500px;
+    margin: left;
 }
 
 form button {
@@ -51,6 +61,8 @@ form button {
     padding: 0.5rem 1rem;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    margin: left;
+    max-width: 300px;
 }
 
 form button:hover {

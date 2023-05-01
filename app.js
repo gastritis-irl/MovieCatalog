@@ -13,6 +13,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
+app.use(express.json());
 
 // Set up multer storage destination and filename
 /* This code is setting up the storage configuration for Multer, a middleware used for handling file
@@ -33,26 +34,37 @@ app.get('/', (req, res) => {
 });
 
 app.post('/add-movie', upload.single('coverImage'), async (req, res) => {
-  console.log(req.body); // Add this line
-  console.log(req.file); // Add this line
+  console.log(req.body);
+  console.log(req.file);
 
   try {
     const movie = new Movie({
-      ...req.body,
+      title: req.body.title,
+      releaseYear: req.body.year,
+      description: req.body.description,
+      genre: req.body.genre,
       coverImage: req.file.path,
     });
     await movie.save();
-    res.json({ success: true, data: movie });
+    res.json({ success: true, data: movie, id: movie._id });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
   }
 });
 
-app.post('/submit-review', async (req, res) => {
+app.post('/movies/:movieId/reviews', async (req, res) => {
   try {
-    const review = new Review(req.body);
-    await review.save();
-    res.json({ success: true, data: review });
+    const { movieId } = req.params;
+    const { rating, review } = req.body;
+
+    const newReview = new Review({
+      movieId,
+      rating,
+      review,
+    });
+
+    await newReview.save();
+    res.json({ success: true, data: newReview });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
   }

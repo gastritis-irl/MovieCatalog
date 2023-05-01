@@ -17,9 +17,18 @@ document.getElementById('add-movie-form').addEventListener('submit', async (e) =
 document.getElementById('submit-review-form').addEventListener('submit', async (e) => {
   e.preventDefault();
   const formData = new FormData(e.target);
-  const response = await fetch(`/movies/${formData.get('movie-id')}/reviews`, {
+  const reviewData = {
+    movieId: formData.get('movieId'),
+    rating: formData.get('rating'),
+    review: formData.get('review'),
+  };
+
+  const response = await fetch(`/movies/${reviewData.movieId}/reviews`, {
     method: 'POST',
-    body: formData,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(reviewData),
   });
 
   if (response.ok) {
