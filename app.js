@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+const multer = require('multer');
 const connectDB = require('./db/database.js');
 const Movie = require('./models/Movie.js');
 const Review = require('./models/Review.js');
@@ -13,14 +14,33 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
+// Set up multer storage destination and filename
+/* This code is setting up the storage configuration for Multer, a middleware used for handling file
+uploads in Node.js. */
+const storage = multer.diskStorage({
+  destination(req, file, cb) {
+    cb(null, 'public/uploads/');
+  },
+  filename(req, file, cb) {
+    cb(null, `${Date.now()}-${file.originalname}`);
+  },
+});
+
+const upload = multer({ storage });
+
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-app.post('/add-movie', async (req, res) => {
-  // Implement logic for adding a movie
+app.post('/add-movie', upload.single('coverImage'), async (req, res) => {
+  console.log(req.body); // Add this line
+  console.log(req.file); // Add this line
+
   try {
-    const movie = new Movie(req.body);
+    const movie = new Movie({
+      ...req.body,
+      coverImage: req.file.path,
+    });
     await movie.save();
     res.json({ success: true, data: movie });
   } catch (error) {
@@ -29,7 +49,6 @@ app.post('/add-movie', async (req, res) => {
 });
 
 app.post('/submit-review', async (req, res) => {
-  // Implement logic for submitting a review
   try {
     const review = new Review(req.body);
     await review.save();

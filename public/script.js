@@ -1,7 +1,7 @@
 document.getElementById('add-movie-form').addEventListener('submit', async (e) => {
   e.preventDefault();
   const formData = new FormData(e.target);
-  const response = await fetch('/movies', {
+  const response = await fetch('/add-movie', {
     method: 'POST',
     body: formData,
   });
