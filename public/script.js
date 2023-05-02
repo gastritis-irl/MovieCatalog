@@ -34,7 +34,8 @@ document.getElementById('submit-review-form').addEventListener('submit', async (
   if (response.ok) {
     alert('Review submitted successfully.');
   } else {
-    alert('Error submitting review. Please check your input and try again.');
+    const errorData = await response.json().catch((err) => console.error(err));
+    alert(`Error submitting review: ${errorData?.message || 'Please check your input and try again.'}`);
   }
 });
 

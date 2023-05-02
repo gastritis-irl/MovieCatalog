@@ -17,9 +17,47 @@ app.use(express.static('public/uploads'));
 
 app.use(express.json());
 
-// Set up multer storage destination and filename
-/* This code is setting up the storage configuration for Multer, a middleware used for handling file
-uploads in Node.js. */
+function validateReviewData(req, res, next) {
+  const { movieId } = req.params;
+  const { rating, review } = req.body;
+  const reviewData = { movieId, rating, review };
+
+  if (!reviewData.movieId) {
+    return res.status(400).json({ success: false, message: 'Movie ID is required' });
+  }
+  if (!reviewData.rating || Number.isNaN(reviewData.rating) || reviewData.rating <= 1 || reviewData.rating >= 10) {
+    return res.status(400).json({ success: false, message: 'Rating should be a number between 1 and 10' });
+  }
+  if (!reviewData.review) {
+    return res.status(400).json({ success: false, message: 'Review is required' });
+  }
+
+  next();
+  return { success: true };
+}
+
+function validateMovieData(data) {
+  if (!data.title) {
+    return { valid: false, message: 'Title is required' };
+  }
+  if (
+    !data.releaseYear ||
+    Number.isNaN(data.releaseYear) ||
+    data.releaseYear < 1800 ||
+    data.releaseYear > new Date().getFullYear()
+  ) {
+    return { valid: false, message: 'Invalid release year' };
+  }
+  if (!data.description) {
+    return { valid: false, message: 'Description is required' };
+  }
+  if (!data.genre) {
+    return { valid: false, message: 'Genre is required' };
+  }
+
+  return { valid: true };
+}
+
 const storage = multer.diskStorage({
   destination(req, file, cb) {
     cb(null, 'public/uploads/');
@@ -36,25 +74,30 @@ app.get('/', (req, res) => {
 });
 
 app.post('/add-movie', upload.single('coverImage'), async (req, res) => {
-  console.log(req.body);
-  console.log(req.file);
+  const movieData = {
+    title: req.body.title,
+    releaseYear: req.body.year,
+    description: req.body.description,
+    genre: req.body.genre,
+    coverImage: req.file.path,
+  };
+
+  const validationResult = validateMovieData(movieData);
+  if (!validationResult.valid) {
+    return res.status(400).json({ success: false, message: validationResult.message });
+  }
 
   try {
-    const movie = new Movie({
-      title: req.body.title,
-      releaseYear: req.body.year,
-      description: req.body.description,
-      genre: req.body.genre,
-      coverImage: req.file.path,
-    });
+    const movie = new Movie(movieData);
     await movie.save();
     res.json({ success: true, data: movie, id: movie._id });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
   }
+  return null;
 });
 
-app.post('/movies/:movieId/reviews', async (req, res) => {
+app.post('/movies/:movieId/reviews', validateReviewData, async (req, res) => {
   try {
     const { movieId } = req.params;
     const { rating, review } = req.body;
@@ -98,7 +141,6 @@ app.get('/reviews', async (req, res) => {
   }
 
   try {
-    // Fetch reviews from the database based on the movieId
     const reviews = await Review.find({ movieId });
 
     return res.json({ success: true, data: reviews });
