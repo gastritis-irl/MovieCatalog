@@ -1,36 +1,84 @@
+/* Basic Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
-  font-family: Arial, sans-serif;
-  text-align: center;
-  background-color: #40E0D0;
+    font-family: 'Arial', sans-serif;
+    background-image: url("img/bg2.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    background-attachment: fixed;
+    color: #333;
+    line-height: 1.6;
 }
 
 
-#game-board {
-  display: flex;
-  justify-content: center;
+h1,
+h2,
+h3 {
+    margin-bottom: 1rem;
+    color: #e71414;
 }
 
-select {
-  width: 50px;
-  height: 50px;
-  background-color: transparent;
-  border: none;
-  font-size: 24px;
-  text-align: center;
+/* Container */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
 }
 
-canvas {
-  display: block;
-  margin: 20px auto;
-  border: 1px solid #000;
+/* Forms */
+form {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 2rem;
 }
 
-.correct {
-  color: #fff;
-  background-color: #000;
+form label {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: #32ebcc;
 }
 
-.incorrect {
-  color: #000;
-  background-color: #fff;
+form input,
+form textarea {
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    color: #32ebcc;
+    max-width: 500px;
+    margin: left;
+}
+
+form button {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin: left;
+    max-width: 300px;
+}
+
+form button:hover {
+    background-color: #555;
+}
+
+/* Search Results */
+#search-results {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-gap: 1rem;
+}
+
+#search-results div {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 1rem;
+    border-radius: 5px;
 }

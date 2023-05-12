@@ -1,3 +1,6 @@
+#uploads
+/public/uploads
+
 # package lock
 package-lock.json
 yarn.lock
