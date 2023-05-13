@@ -1,5 +1,5 @@
 const express = require('express');
-const path = require('path');
+// const path = require('path');
 const multer = require('multer');
 const connectDB = require('./db/database.js');
 const Movie = require('./models/Movie.js');
@@ -14,8 +14,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.use(express.static('public/uploads'));
+app.use('/uploads', express.static('uploads'));
 
-app.use(express.json());
+app.set('view engine', 'ejs');
 
 function validateReviewData(req, res, next) {
   const { movieId } = req.params;
@@ -54,6 +55,9 @@ function validateMovieData(data) {
   if (!data.genre) {
     return { valid: false, message: 'Genre is required' };
   }
+  if (!data.coverImage) {
+    return { valid: false, message: 'Cover image is required' };
+  }
 
   return { valid: true };
 }
@@ -69,8 +73,30 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+app.get('/', async (req, res) => {
+  const { title, genre, minYear, maxYear } = req.query;
+  const query = Movie.find();
+
+  if (title) query.where('title', new RegExp(title, 'i'));
+  if (genre) query.where('genre', genre);
+  if (minYear) query.where('releaseYear').gte(minYear);
+  if (maxYear) query.where('releaseYear').lte(maxYear);
+
+  const movies = await query.exec();
+  res.render('index', { movies });
+});
+
+app.get('/movies/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const movie = await Movie.findById(id);
+    const reviews = await Review.find({ movieId: id });
+
+    res.render('movie', { movie, reviews });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
 });
 
 app.post('/add-movie', upload.single('coverImage'), async (req, res) => {
@@ -90,7 +116,7 @@ app.post('/add-movie', upload.single('coverImage'), async (req, res) => {
   try {
     const movie = new Movie(movieData);
     await movie.save();
-    res.json({ success: true, data: movie, id: movie._id });
+    res.redirect(`/movies/${movie._id}`);
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
   }
@@ -150,7 +176,7 @@ app.get('/reviews', async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 1234;
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
