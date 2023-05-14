@@ -1,14 +1,21 @@
 const express = require('express');
 // const path = require('path');
 const multer = require('multer');
+// const jwt = require('jsonwebtoken');
 const connectDB = require('./db/database.js');
 const Movie = require('./models/Movie.js');
 const Review = require('./models/Review.js');
+const User = require('./models/User.js');
 
 // Connect to the database
 connectDB();
 
 const app = express();
+
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.originalUrl}`);
+  next();
+});
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -84,6 +91,54 @@ app.get('/', async (req, res) => {
 
   const movies = await query.exec();
   res.render('index', { movies });
+});
+
+app.post('/register', async (req, res) => {
+  const { username, password } = req.body;
+
+  // In a real-world application, you'd want to validate this data and hash the password.
+
+  const user = new User({ username, password });
+
+  try {
+    const savedUser = await user.save();
+    res.json(savedUser);
+  } catch (err) {
+    res.status(400).send(err);
+  }
+});
+
+app.post('/login', async (req, res) => {
+  const { username, password } = req.body;
+
+  // In a real-world application, you'd want to validate this data.
+
+  try {
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.status(400).send('User not found');
+    }
+
+    // Check password
+    if (user.password !== password) {
+      // In a real-world application, you'd want to hash the password and compare the hashed values.
+      return res.status(400).send('Invalid password');
+    }
+
+    res.json(user); // In a real-world application, you'd want to create a token here and send it to the user.
+  } catch (err) {
+    res.status(400).send(err);
+  }
+
+  return null;
+});
+
+app.get('/register', (req, res) => {
+  res.render('register');
+});
+
+app.get('/login', (req, res) => {
+  res.render('login');
 });
 
 app.get('/movies/:id', async (req, res) => {
@@ -180,4 +235,9 @@ const PORT = process.env.PORT || 1234;
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
+});
+
+app.use((err, req, res) => {
+  console.error(err);
+  res.status(500).json({ success: false, message: err.message });
 });
