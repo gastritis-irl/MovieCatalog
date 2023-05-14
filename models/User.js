@@ -1,3 +1,7 @@
+// Desc: User model for MongoDB
+//
+// Path: \models\User.js
+
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
@@ -13,7 +17,7 @@ const UserSchema = new mongoose.Schema({
   },
 });
 
-UserSchema.pre('save', async (next) => {
+UserSchema.pre('save', async function save(next) {
   if (this.isModified('password')) {
     this.password = await bcrypt.hash(this.password, 10);
   }

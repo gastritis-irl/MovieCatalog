@@ -1,4 +1,41 @@
-import { addMovie, getMovies } from '../api/movie.js';
+// Purpose: Client-side JavaScript for the movie app
+//
+// Path: \public\script.js
+
+async function addMovie(formData) {
+  const response = await fetch('/add-movie', {
+    method: 'POST',
+    body: formData,
+  });
+
+  if (!response.ok) {
+    throw new Error('Error adding movie');
+  }
+
+  return response.json();
+}
+
+async function getMovies(formData) {
+  formData.set('title', formData.get('search-title'));
+  formData.set('genre', formData.get('search-genre'));
+  formData.set('minYear', formData.get('min-year'));
+  formData.set('maxYear', formData.get('max-year'));
+  formData.delete('search-title');
+  formData.delete('search-genre');
+  formData.delete('min-year');
+  formData.delete('max-year');
+  const queryParams = new URLSearchParams(formData).toString();
+
+  const response = await fetch(`/movies?${queryParams}`, {
+    method: 'GET',
+  });
+
+  if (!response.ok) {
+    throw new Error('Error searching movies');
+  }
+
+  return response.json();
+}
 
 document.getElementById('add-movie-form').addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -6,7 +43,7 @@ document.getElementById('add-movie-form').addEventListener('submit', async (e) =
 
   try {
     const result = await addMovie(formData);
-    alert(`Movie added with ID: ${result.id}`);
+    alert(`Movie added with ID: ${result.movie._id}`);
   } catch (error) {
     alert(error.message);
   }

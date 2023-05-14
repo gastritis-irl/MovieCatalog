@@ -1,3 +1,5 @@
+// Path: \app.js
+
 const express = require('express');
 // const path = require('path');
 const multer = require('multer');
@@ -20,8 +22,8 @@ app.use((req, res, next) => {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
-app.use(express.static('public/uploads'));
-app.use('/uploads', express.static('uploads'));
+// app.use('movies/public/uploads', express.static('public/uploads'));
+// app.use('/public/uploads', express.static('uploads'));
 
 app.set('view engine', 'ejs');
 
@@ -171,7 +173,7 @@ app.post('/add-movie', upload.single('coverImage'), async (req, res) => {
   try {
     const movie = new Movie(movieData);
     await movie.save();
-    res.redirect(`/movies/${movie._id}`);
+    res.json({ success: true, movie });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
   }
@@ -237,7 +239,8 @@ app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 
-app.use((err, req, res) => {
+app.use((err, req, res, next) => {
   console.error(err);
   res.status(500).json({ success: false, message: err.message });
+  next(err);
 });
