@@ -3,11 +3,13 @@
 const express = require('express');
 // const path = require('path');
 const multer = require('multer');
-// const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const connectDB = require('./db/database.js');
 const Movie = require('./models/Movie.js');
 const Review = require('./models/Review.js');
 const User = require('./models/User.js');
+require('dotenv').config();
 
 // Connect to the database
 connectDB();
@@ -26,6 +28,20 @@ app.use(express.static('public'));
 // app.use('/public/uploads', express.static('uploads'));
 
 app.set('view engine', 'ejs');
+
+function verifyToken(req, res, next) {
+  const token = req.header('auth-token');
+  if (!token) return res.status(401).send('Access Denied');
+
+  try {
+    const verified = jwt.verify(token, process.env.JWT_SECRET_KEY);
+    req.user = verified;
+    next();
+  } catch (err) {
+    res.status(400).send('Invalid Token');
+  }
+  return null;
+}
 
 function validateReviewData(req, res, next) {
   const { movieId } = req.params;
@@ -98,40 +114,38 @@ app.get('/', async (req, res) => {
 app.post('/register', async (req, res) => {
   const { username, password } = req.body;
 
-  // In a real-world application, you'd want to validate this data and hash the password.
-
   const user = new User({ username, password });
 
   try {
-    const savedUser = await user.save();
-    res.json(savedUser);
+    await user.save();
+    res.json({ username: user.username, _id: user._id });
   } catch (err) {
     res.status(400).send(err);
   }
 });
 
-app.post('/login', async (req, res) => {
+app.post('/login', async (req, res, next) => {
   const { username, password } = req.body;
-
-  // In a real-world application, you'd want to validate this data.
 
   try {
     const user = await User.findOne({ username });
     if (!user) {
-      return res.status(400).send('User not found');
+      return next(new Error('User not found')); // Pass the error to the next middleware function
     }
 
-    // Check password
-    if (user.password !== password) {
-      // In a real-world application, you'd want to hash the password and compare the hashed values.
-      return res.status(400).send('Invalid password');
+    // Compare hashed password with input password
+    const validPassword = await bcrypt.compare(password, user.password);
+    if (!validPassword) {
+      return next(new Error('Invalid password')); // Pass the error to the next middleware function
     }
 
-    res.json(user); // In a real-world application, you'd want to create a token here and send it to the user.
+    // Create a token
+    const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET_KEY); // Use environment variable for JWT secret
+
+    res.header('auth-token', token).json(token);
   } catch (err) {
-    res.status(400).send(err);
+    next(err); // Pass any other errors to the next middleware function
   }
-
   return null;
 });
 
@@ -180,7 +194,7 @@ app.post('/add-movie', upload.single('coverImage'), async (req, res) => {
   return null;
 });
 
-app.post('/movies/:movieId/reviews', validateReviewData, async (req, res) => {
+app.post('/movies/:movieId/reviews', verifyToken, validateReviewData, async (req, res) => {
   try {
     const { movieId } = req.params;
     const { rating, review } = req.body;

@@ -57,7 +57,7 @@
             <% movies.forEach(function(movie) { %>
                 <div class="movie">
                     <h3><%= movie.title %></h3>
-                    <img src="/<%= movie.coverImage %>" alt="<%= movie.title %> cover image">
+                    <img src="/<%= movie.coverImage.replace('public\\','') %>" alt="<%= movie.title %> cover image" class="cover-image">
                     <p>Year: <%= movie.releaseYear %></p>
                     <p>Genre: <%= movie.genre %></p>
                     <p>Description: <%= movie.description %></p>

@@ -18,6 +18,11 @@ body {
     line-height: 1.6;
 }
 
+.cover-image {
+    width: 200px; 
+    height: auto; 
+}
+
 
 h1,
 h2,
