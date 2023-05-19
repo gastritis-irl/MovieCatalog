@@ -29,19 +29,19 @@ app.use(express.static('public'));
 
 app.set('view engine', 'ejs');
 
-function verifyToken(req, res, next) {
-  const token = req.header('auth-token');
-  if (!token) return res.status(401).send('Access Denied');
+// function verifyToken(req, res, next) {
+//   const token = req.header('auth-token');
+//   if (!token) return res.status(401).send('Access Denied');
 
-  try {
-    const verified = jwt.verify(token, process.env.JWT_SECRET_KEY);
-    req.user = verified;
-    next();
-  } catch (err) {
-    res.status(400).send('Invalid Token');
-  }
-  return null;
-}
+//   try {
+//     const verified = jwt.verify(token, process.env.JWT_SECRET_KEY);
+//     req.user = verified;
+//     next();
+//   } catch (err) {
+//     res.status(400).send('Invalid Token');
+//   }
+//   return null;
+// }
 
 function validateReviewData(req, res, next) {
   const { movieId } = req.params;
@@ -194,7 +194,7 @@ app.post('/add-movie', upload.single('coverImage'), async (req, res) => {
   return null;
 });
 
-app.post('/movies/:movieId/reviews', verifyToken, validateReviewData, async (req, res) => {
+app.post('/movies/:movieId/reviews', /* verifyToken, */ validateReviewData, async (req, res) => {
   try {
     const { movieId } = req.params;
     const { rating, review } = req.body;
@@ -206,7 +206,11 @@ app.post('/movies/:movieId/reviews', verifyToken, validateReviewData, async (req
     });
 
     await newReview.save();
-    res.json({ success: true, data: newReview });
+
+    const movie = await Movie.findById(movieId);
+    const reviews = await Review.find({ movieId });
+
+    res.render('movie', { movie, reviews });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
   }

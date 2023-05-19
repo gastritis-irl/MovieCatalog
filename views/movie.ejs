@@ -13,7 +13,7 @@
     <h1><%= movie.title %></h1>
 
     <div class="container">
-        <img src="<%= movie.coverImage.replace('public\\uploads\\', '/uploads/') %>" alt="<%= movie.title %>">
+        <img src="<%= (movie?.coverImage?.replace('public\\uploads\\', '/uploads/')) || '/img/fnf404.jpg' %>" alt="<%= movie?.title || 'Movie not found' %>">
 
         <p>Year: <%= movie.releaseYear %></p>
         <p>Genre: <%= movie.genre %></p>
@@ -28,7 +28,7 @@
         <% }); %>
 
         <h2>Add Review</h2>
-        <form id="submit-review-form">
+        <form id="submit-review-form" action="/movies/<%= movie._id %>/reviews" method="post">
             <input type="hidden" id="movie-id" name="movieId" value="<%= movie._id %>">
 
             <label for="rating">Rating (1-10):</label>
