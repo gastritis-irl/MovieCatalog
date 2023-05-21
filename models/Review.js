@@ -3,8 +3,13 @@ const mongoose = require('mongoose');
 const ReviewSchema = new mongoose.Schema({
   movieId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Movie',
     required: true,
+    ref: 'Movie',
+  },
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: 'User',
   },
   rating: {
     type: Number,

@@ -45,8 +45,8 @@ app.set('view engine', 'ejs');
 
 function validateReviewData(req, res, next) {
   const { movieId } = req.params;
-  const { rating, review } = req.body;
-  const reviewData = { movieId, rating, review };
+  const { rating, review, userId } = req.body;
+  const reviewData = { movieId, rating, review, userId };
 
   if (!reviewData.movieId) {
     return res.status(400).json({ success: false, message: 'Movie ID is required' });
@@ -56,6 +56,9 @@ function validateReviewData(req, res, next) {
   }
   if (!reviewData.review) {
     return res.status(400).json({ success: false, message: 'Review is required' });
+  }
+  if (!reviewData.userId) {
+    return res.status(400).json({ success: false, message: 'User ID is required' });
   }
 
   next();
@@ -163,8 +166,9 @@ app.get('/movies/:id', async (req, res) => {
   try {
     const movie = await Movie.findById(id);
     const reviews = await Review.find({ movieId: id });
+    const users = await User.find();
 
-    res.render('movie', { movie, reviews });
+    res.render('movie', { movie, reviews, users });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
   }
@@ -201,6 +205,7 @@ app.post('/movies/:movieId/reviews', /* verifyToken, */ validateReviewData, asyn
 
     const newReview = new Review({
       movieId,
+      userId: req.body.userId,
       rating,
       review,
     });
@@ -209,8 +214,9 @@ app.post('/movies/:movieId/reviews', /* verifyToken, */ validateReviewData, asyn
 
     const movie = await Movie.findById(movieId);
     const reviews = await Review.find({ movieId });
+    const users = await User.find();
 
-    res.render('movie', { movie, reviews });
+    res.render('movie', { movie, reviews, users });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
   }

@@ -18,6 +18,26 @@ async function submitReview(reviewData) {
   }
 }
 
+function updateUserId() {
+  // Get the selected user's ID
+  const userId = document.getElementById('user-id').value;
+
+  // Update the hidden input's value
+  document.getElementById('user-id-hidden').value = userId;
+}
+
+// Attach the event listener to the dropdown on page load
+window.onload = function onload() {
+  const userDropdown = document.getElementById('user');
+
+  if (userDropdown) {
+    userDropdown.addEventListener('change', updateUserId);
+
+    // Call the function once to set the initial value
+    updateUserId();
+  }
+};
+
 document.getElementById('submit-review-form').addEventListener('submit', async (e) => {
   e.preventDefault();
   const formData = new FormData(e.target);
@@ -25,12 +45,13 @@ document.getElementById('submit-review-form').addEventListener('submit', async (
     movieId: formData.get('movieId'),
     rating: formData.get('rating'),
     review: formData.get('review'),
+    userId: formData.get('userId'),
   };
 
   try {
     await submitReview(reviewData);
     alert('Review submitted successfully.');
-    window.location.reload(); // reload the page to show the new review
+    window.location.reload();
   } catch (error) {
     alert(`Error submitting review: ${error.message || 'Please check your input and try again.'}`);
   }
