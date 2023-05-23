@@ -1,41 +1,51 @@
-document.getElementById('add-movie-form').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const formData = new FormData(e.target);
+// Purpose: Client-side JavaScript for the movie app
+//
+// Path: \public\script.js
+
+async function addMovie(formData) {
   const response = await fetch('/add-movie', {
     method: 'POST',
     body: formData,
   });
 
-  if (response.ok) {
-    const result = await response.json();
-    alert(`Movie added with ID: ${result.id}`);
-  } else {
-    alert('Error adding movie. Please check your input and try again.');
+  if (!response.ok) {
+    throw new Error('Error adding movie');
   }
-});
 
-document.getElementById('submit-review-form').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const formData = new FormData(e.target);
-  const reviewData = {
-    movieId: formData.get('movieId'),
-    rating: formData.get('rating'),
-    review: formData.get('review'),
-  };
+  return response.json();
+}
 
-  const response = await fetch(`/movies/${reviewData.movieId}/reviews`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(reviewData),
+async function getMovies(formData) {
+  formData.set('title', formData.get('search-title'));
+  formData.set('genre', formData.get('search-genre'));
+  formData.set('minYear', formData.get('min-year'));
+  formData.set('maxYear', formData.get('max-year'));
+  formData.delete('search-title');
+  formData.delete('search-genre');
+  formData.delete('min-year');
+  formData.delete('max-year');
+  const queryParams = new URLSearchParams(formData).toString();
+
+  const response = await fetch(`/movies?${queryParams}`, {
+    method: 'GET',
   });
 
-  if (response.ok) {
-    alert('Review submitted successfully.');
-  } else {
-    const errorData = await response.json().catch((err) => console.error(err));
-    alert(`Error submitting review: ${errorData?.message || 'Please check your input and try again.'}`);
+  if (!response.ok) {
+    throw new Error('Error searching movies');
+  }
+
+  return response.json();
+}
+
+document.getElementById('add-movie-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const formData = new FormData(e.target);
+
+  try {
+    const result = await addMovie(formData);
+    alert(`Movie added with ID: ${result.movie._id}`);
+  } catch (error) {
+    alert(error.message);
   }
 });
 
@@ -63,8 +73,6 @@ function createMovieDiv(movie) {
 }
 
 function displaySearchResults(results) {
-  console.log('Displaying search results:', results);
-
   const searchResultsDiv = document.getElementById('search-results');
   searchResultsDiv.innerHTML = '';
 
@@ -83,24 +91,11 @@ function displaySearchResults(results) {
 document.getElementById('search-movies-form').addEventListener('submit', async (e) => {
   e.preventDefault();
   const formData = new FormData(e.target);
-  formData.set('title', formData.get('search-title'));
-  formData.set('genre', formData.get('search-genre'));
-  formData.set('minYear', formData.get('min-year'));
-  formData.set('maxYear', formData.get('max-year'));
-  formData.delete('search-title');
-  formData.delete('search-genre');
-  formData.delete('min-year');
-  formData.delete('max-year');
-  const queryParams = new URLSearchParams(formData).toString();
-  const response = await fetch(`/movies?${queryParams}`, {
-    method: 'GET',
-  });
 
-  if (response.ok) {
-    const results = await response.json();
-    console.log('Search results:', results);
+  try {
+    const results = await getMovies(formData);
     displaySearchResults(results);
-  } else {
-    alert('Error searching movies. Please try again.');
+  } catch (error) {
+    alert(error.message);
   }
 });

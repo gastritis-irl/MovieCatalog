@@ -92,3 +92,4 @@ typings/
 
 Thumbs.db
 .DS_Store
+keyGenerator.js

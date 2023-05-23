@@ -1,0 +1,63 @@
+<!--Path: /views/movie.ejs-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= movie.title %></title>
+    <link rel="stylesheet" href="/movie.css">
+    <script src="/movieScript.js" defer></script>
+</head>
+<body>
+    <h1><%= movie.title %></h1>
+
+    <div class="container">
+        <img src="<%= (movie?.coverImage?.replace('public\\uploads\\', '/uploads/')) || '/img/fnf404.jpg' %>" alt="<%= movie?.title || 'Movie not found' %>">
+
+        <p>Year: <%= movie.releaseYear %></p>
+        <p>Genre: <%= movie.genre %></p>
+        <p>Description: <%= movie.description %></p>
+
+        <h2>Reviews</h2>
+        <% reviews.forEach(review => { %>
+            <div class="review">
+                <p>User: <% 
+                    // Find the user who wrote this review
+                    const user = users.find(user => user._id.toString() === review.userId.toString());
+                    // If the user was found, print their username. Otherwise, print 'Unknown user'
+                    if (user) { %> 
+                        <%= user.username %> 
+                    <% } else { %> 
+                        Unknown user 
+                    <% } %>
+                </p>
+                <p>Rating: <%= review.rating %></p>
+                <p>Review: <%= review.review %></p>
+            </div>
+        <% }); %>
+
+
+        <h2>Add Review</h2>
+        <form id="submit-review-form" action="/movies/<%= movie._id %>/reviews" method="post">
+            <input type="hidden" id="movie-id" name="movieId" value="<%= movie._id %>">
+            <input type="hidden" id="user-id-hidden" name="userId">
+
+            <label for="rating">Rating (1-10):</label>
+            <input type="number" id="rating" name="rating" min="1" max="10" required><br>
+
+            <label for="review-text">Review:</label>
+            <textarea id="review-text" name="review" required></textarea><br>
+            <label for="user">User:</label>
+            
+            <select id="user-id" name="userId" required onchange="updateUserId()">
+                <% users.forEach(user => { %>
+                    <option value="<%= user._id %>"><%= user.username %></option>
+                <% }); %>
+            </select><br>
+
+            <button type="submit">Submit Review</button>
+        </form>
+    </div>
+</body>
+</html>
