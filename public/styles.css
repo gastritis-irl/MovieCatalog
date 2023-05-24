@@ -61,7 +61,7 @@ form textarea {
     margin: left;
 }
 
-form button {
+/* form button {
     background-color: #333;
     color: #fff;
     border: none;
@@ -70,11 +70,11 @@ form button {
     transition: background-color 0.3s ease;
     margin: left;
     max-width: 300px;
-}
-
+} */
+/* 
 form button:hover {
     background-color: #555;
-}
+} */
 
 /* Search Results */
 #search-results {

@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Online Film Collection</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="button2.css">
     <script src="script.js" defer></script>
 </head>
 <body>
@@ -59,9 +60,10 @@
                 <h3><%= movie.title %></h3>
                 <img src="/<%= movie.coverImage.replace('public\\','') %>" alt="<%= movie.title %> cover image" class="cover-image">
                 <p>Year: <%= movie.releaseYear %></p>
-                <!-- Commented out until further click
+                <!-- 
                 <p>Genre: <%= movie.genre %></p>
-                <p>Description: <%= movie.description %></p>-->
+                <p>Description: <%= movie.description %></p>
+                -->
                 <button class="details">Show Details</button>
                 <div class="extra-info" style="display: none;"></div>
                 <a href="/movies/<%= movie._id %>">View Details Page</a>
