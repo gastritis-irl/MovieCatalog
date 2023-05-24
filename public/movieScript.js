@@ -1,5 +1,3 @@
-// Purpose: To handle the movie page
-//
 // Path: \public\movieScript.js
 
 async function submitReview(reviewData) {
@@ -60,7 +58,8 @@ document.getElementById('submit-review-form').addEventListener('submit', async (
 document.querySelectorAll('.delete-review').forEach((button) => {
   button.addEventListener('click', async function deleteReview() {
     const reviewId = this.parentElement.id;
-    const response = await fetch(`/reviews/${reviewId}`, {
+    const movieId = document.getElementById('movieId').value;
+    const response = await fetch(`/movies/${movieId}/reviews/${reviewId}`, {
       method: 'DELETE',
     });
 

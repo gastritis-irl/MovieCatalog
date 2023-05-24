@@ -275,15 +275,16 @@ app.get('/reviews', async (req, res) => {
 });
 
 app.delete(
-  '/reviews/:reviewId',
+  '/movies/:movieId/reviews/:reviewId',
   /* verifyToken, */ async (req, res) => {
     try {
-      const { reviewId } = req.params;
-
-      console.log('Deleting review with id:', reviewId);
+      const { movieId, reviewId } = req.params;
+      console.log('Deleting review with id:', reviewId, 'for movie:', movieId);
 
       // First, find the review with the provided ID
-      const review = await Review.findById(reviewId);
+      const review = await Review.findOne({ _id: reviewId, movieId });
+
+      console.log('Review found:', review);
 
       if (!review) {
         return res.status(404).json({ success: false, message: 'Review not found' });
