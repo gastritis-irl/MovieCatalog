@@ -56,3 +56,19 @@ document.getElementById('submit-review-form').addEventListener('submit', async (
     alert(`Error submitting review: ${error.message || 'Please check your input and try again.'}`);
   }
 });
+
+document.querySelectorAll('.delete-review').forEach((button) => {
+  button.addEventListener('click', async function deleteReview() {
+    const reviewId = this.parentElement.id;
+    const response = await fetch(`/reviews/${reviewId}`, {
+      method: 'DELETE',
+    });
+
+    if (response.ok) {
+      this.parentElement.remove();
+      alert('Review deleted successfully');
+    } else {
+      alert('Failed to delete review');
+    }
+  });
+});

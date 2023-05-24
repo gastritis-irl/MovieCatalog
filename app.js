@@ -240,6 +240,23 @@ app.get('/movies', async (req, res) => {
   }
 });
 
+app.get('/movies/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const movie = await Movie.findById(id);
+    const reviews = await Review.find({ movieId: id });
+    const users = await User.find();
+
+    // Calculate the average rating
+    const averageRating = reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length;
+
+    res.render('movie', { movie, reviews, users, averageRating });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+});
+
 app.get('/reviews', async (req, res) => {
   const { movieId } = req.query;
 
@@ -256,6 +273,32 @@ app.get('/reviews', async (req, res) => {
     return res.status(500).json({ success: false, message: 'Error fetching reviews' });
   }
 });
+
+app.delete(
+  '/reviews/:reviewId',
+  /* verifyToken, */ async (req, res) => {
+    try {
+      const { reviewId } = req.params;
+
+      console.log('Deleting review with id:', reviewId);
+
+      // First, find the review with the provided ID
+      const review = await Review.findById(reviewId);
+
+      if (!review) {
+        return res.status(404).json({ success: false, message: 'Review not found' });
+      }
+
+      // Then delete it
+      await review.remove();
+
+      return res.json({ success: true, message: 'Review deleted successfully' });
+    } catch (error) {
+      console.error('Error deleting the review:', error);
+      return res.status(500).json({ success: false, message: 'Error deleting the review' });
+    }
+  },
+);
 
 const PORT = process.env.PORT || 1234;
 

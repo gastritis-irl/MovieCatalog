@@ -99,3 +99,15 @@ document.getElementById('search-movies-form').addEventListener('submit', async (
     alert(error.message);
   }
 });
+
+document.querySelectorAll('.details').forEach((button) => {
+  button.addEventListener('click', async function showDetails() {
+    const movieId = this.parentElement.id;
+    const response = await fetch(`/movies/${movieId}/details`);
+    const { genre, description } = await response.json();
+
+    const infoDiv = this.nextElementSibling;
+    infoDiv.style.display = 'block';
+    infoDiv.textContent = `Genre: ${genre}, Description: ${description}`;
+  });
+});
