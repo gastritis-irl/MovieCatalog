@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="styles/styles.css">
     <link rel="stylesheet" href="styles/button2.css">
     <link rel="stylesheet" href="styles/detailsPage.css">
+    <link rel="stylesheet" href="styles/fileform.css">
     <script src="script.js" defer></script>
 </head>
 <body>
@@ -18,7 +19,7 @@
     </nav>
 
     <h2>Add Movie</h2>
-    <form id="add-movie-form" action="/add-movie" method="post" enctype="multipart/form-data">
+    <form class="form" id="add-movie-form" action="/add-movie" method="post" enctype="multipart/form-data">
         <label for="title">Title:</label>
         <input type="text" id="title" name="title" required><br>
 
@@ -32,7 +33,17 @@
         <input type="text" id="genre" name="genre" required><br>
 
         <label for="cover-image">Cover Image:</label>
-        <input type="file" id="cover-image" name="coverImage" required><br> 
+        <!-- <input type="file" id="cover-image" name="coverImage" required><br>  -->
+        <span class="form-title">Upload your file</span>
+        <p class="form-paragraph">
+            File should be an image
+        </p>
+        
+        <label for="cover-image" class="drop-container">
+        <span class="drop-title">Drop files here</span>
+        or
+        <input type="file" accept="image/*" required="" id="cover-image" name="coverImage" required ><br>
+        </label>
 
         <button class="onbackground" type="submit">Add Movie</button>
     </form>

@@ -51,7 +51,7 @@ function validateReviewData(req, res, next) {
   if (!reviewData.movieId) {
     return res.status(400).json({ success: false, message: 'Movie ID is required' });
   }
-  if (!reviewData.rating || Number.isNaN(reviewData.rating) || reviewData.rating <= 1 || reviewData.rating >= 10) {
+  if (!reviewData.rating || Number.isNaN(reviewData.rating) || reviewData.rating < 1 || reviewData.rating > 10) {
     return res.status(400).json({ success: false, message: 'Rating should be a number between 1 and 10' });
   }
   if (!reviewData.review) {
