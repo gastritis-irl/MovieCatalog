@@ -240,7 +240,24 @@ app.get('/movies', async (req, res) => {
   }
 });
 
-app.get('/movies/:id', async (req, res) => {
+// app.get('/movies/:id', async (req, res) => {
+//   const { id } = req.params;
+
+//   try {
+//     const movie = await Movie.findById(id);
+//     const reviews = await Review.find({ movieId: id });
+//     const users = await User.find();
+
+//     // Calculate the average rating
+//     const averageRating = reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length;
+
+//     res.render('movie', { movie, reviews, users, averageRating });
+//   } catch (error) {
+//     res.status(400).json({ success: false, message: error.message });
+//   }
+// });
+
+app.get('/api/movies/:id', async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -248,10 +265,10 @@ app.get('/movies/:id', async (req, res) => {
     const reviews = await Review.find({ movieId: id });
     const users = await User.find();
 
-    // Calculate the average rating
-    const averageRating = reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length;
+    // Structure the response data as needed, this is just a simple example
+    const response = { movie, reviews, users };
 
-    res.render('movie', { movie, reviews, users, averageRating });
+    res.json(response);
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
   }

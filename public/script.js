@@ -69,7 +69,80 @@ function createMovieDiv(movie) {
   description.textContent = `Description: ${movie.description}`;
   movieDiv.appendChild(description);
 
+  const detailsButton = document.createElement('button');
+  detailsButton.className = 'details';
+  detailsButton.textContent = 'Show Details';
+
+  const extraInfoDiv = document.createElement('div');
+  extraInfoDiv.className = 'extra-info';
+  extraInfoDiv.style.display = 'none';
+  movieDiv.appendChild(extraInfoDiv);
+
+  // Add event listener to the details button
+  detailsButton.addEventListener('click', async () => {
+    // Fetch and display movie details
+    // Make sure your server provides an endpoint that gives more detailed information about a movie
+    try {
+      const response = await fetch(`/movies/${movie._id}`);
+      const movieDetails = await response.json();
+
+      if (response.ok) {
+        extraInfoDiv.textContent = `More Details: Genre - ${movieDetails.genre}, Description - ${movieDetails.description}`;
+        extraInfoDiv.style.display = 'block';
+      } else {
+        throw new Error(`Error fetching movie details: ${response.status}`);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  });
+
   return movieDiv;
+}
+
+async function showDetails() {
+  const movieId = this.parentElement.id;
+  try {
+    const response = await fetch(`/api/movies/${movieId}`);
+
+    if (!response.ok) {
+      throw new Error(`Error fetching movie details: ${response.status}`);
+    }
+
+    const movieDetails = await response.json();
+
+    // Update the movie details in the DOM
+    const infoDiv = this.nextElementSibling;
+    infoDiv.style.display = 'block';
+
+    // Clear the content of infoDiv if there's anything in it
+    infoDiv.innerHTML = '';
+
+    // Create and append movie details with new classes
+    const movieTitle = document.createElement('p');
+    movieTitle.textContent = `Title: ${movieDetails.movie.title}`;
+    movieTitle.classList.add('detail');
+    infoDiv.appendChild(movieTitle);
+
+    const movieGenre = document.createElement('p');
+    movieGenre.textContent = `Genre: ${movieDetails.movie.genre}`;
+    movieGenre.classList.add('detail');
+    infoDiv.appendChild(movieGenre);
+
+    const movieDescription = document.createElement('p');
+    movieDescription.textContent = `Description: ${movieDetails.movie.description}`;
+    movieDescription.classList.add('detail');
+    infoDiv.appendChild(movieDescription);
+
+    const movieYear = document.createElement('p');
+    movieYear.textContent = `Year: ${movieDetails.movie.releaseYear}`;
+    movieYear.classList.add('detail');
+    infoDiv.appendChild(movieYear);
+
+    // ... and so on, for each detail you want to display
+  } catch (error) {
+    console.error('Error fetching movie details:', error);
+  }
 }
 
 function displaySearchResults(results) {
@@ -80,6 +153,8 @@ function displaySearchResults(results) {
     results.data.forEach((movie) => {
       const movieDiv = createMovieDiv(movie);
       searchResultsDiv.appendChild(movieDiv);
+      const detailsButton = movieDiv.querySelector('.details');
+      detailsButton.addEventListener('click', showDetails);
     });
   } else {
     const errorMessage = document.createElement('p');
@@ -101,13 +176,5 @@ document.getElementById('search-movies-form').addEventListener('submit', async (
 });
 
 document.querySelectorAll('.details').forEach((button) => {
-  button.addEventListener('click', async function showDetails() {
-    const movieId = this.parentElement.id;
-    const response = await fetch(`/movies/${movieId}/details`);
-    const { genre, description } = await response.json();
-
-    const infoDiv = this.nextElementSibling;
-    infoDiv.style.display = 'block';
-    infoDiv.textContent = `Genre: ${genre}, Description: ${description}`;
-  });
+  button.addEventListener('click', showDetails);
 });

@@ -5,11 +5,16 @@ button {
   border: 3px ridge #149CEA;
   outline: none;
   background-color: transparent;
-  color: white;
+  color: rgb(25, 57, 63);
   transition: 1s;
   border-radius: 0.3em;
   font-size: 16px;
   font-weight: bold;
+}
+
+button.onbackground {
+  color: rgb(175, 236, 226);
+  /* box-shadow: inset 0px 0px 25px #1479EA; */
 }
 
 button::after {
@@ -37,7 +42,7 @@ button::before {
 }
 
 button:hover::before, button:hover::after {
-  transform: scale(0)
+  transform: scale(1)
 }
 
 button:hover {

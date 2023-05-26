@@ -9,7 +9,7 @@
 
 body {
     font-family: 'Arial', sans-serif;
-    background-image: url("img/bg2.jpg");
+    background-image: url("../img/bg2.jpg");
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center center;
@@ -60,6 +60,21 @@ form textarea {
     max-width: 500px;
     margin: left;
 }
+
+/* Details Styling */
+.detail {
+    padding: 0.5em;
+    margin: 0.5em 0;
+    background-color: #32ebcc;
+    color: #1c1d1c;
+    border-radius: 5px;
+    transition: all 0.3s ease-in-out;
+}
+
+.detail:hover {
+    background-color: #149CEA;
+}
+
 
 /* form button {
     background-color: #333;
