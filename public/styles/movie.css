@@ -75,3 +75,7 @@ img {
 #submit-review-form button:hover {
     background-color: #555;
 }
+
+.centered-title {
+    text-align: center;
+}
