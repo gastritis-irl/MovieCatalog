@@ -298,7 +298,7 @@ app.delete(
       const { movieId, reviewId } = req.params;
       console.log('Deleting review with id:', reviewId, 'for movie:', movieId);
 
-      // First, find the review with the provided ID
+      // First, check if the review with the provided ID exists
       const review = await Review.findOne({ _id: reviewId, movieId });
 
       console.log('Review found:', review);
@@ -308,7 +308,7 @@ app.delete(
       }
 
       // Then delete it
-      await review.remove();
+      await Review.deleteOne({ _id: reviewId });
 
       return res.json({ success: true, message: 'Review deleted successfully' });
     } catch (error) {

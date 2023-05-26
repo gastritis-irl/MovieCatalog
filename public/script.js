@@ -119,10 +119,10 @@ async function showDetails() {
     infoDiv.innerHTML = '';
 
     // Create and append movie details with new classes
-    const movieTitle = document.createElement('p');
-    movieTitle.textContent = `Title: ${movieDetails.movie.title}`;
-    movieTitle.classList.add('detail');
-    infoDiv.appendChild(movieTitle);
+    // const movieTitle = document.createElement('p');
+    // movieTitle.textContent = `Title: ${movieDetails.movie.title}`;
+    // movieTitle.classList.add('detail');
+    // infoDiv.appendChild(movieTitle);
 
     const movieGenre = document.createElement('p');
     movieGenre.textContent = `Genre: ${movieDetails.movie.genre}`;
@@ -134,10 +134,10 @@ async function showDetails() {
     movieDescription.classList.add('detail');
     infoDiv.appendChild(movieDescription);
 
-    const movieYear = document.createElement('p');
-    movieYear.textContent = `Year: ${movieDetails.movie.releaseYear}`;
-    movieYear.classList.add('detail');
-    infoDiv.appendChild(movieYear);
+    // const movieYear = document.createElement('p');
+    // movieYear.textContent = `Year: ${movieDetails.movie.releaseYear}`;
+    // movieYear.classList.add('detail');
+    // infoDiv.appendChild(movieYear);
 
     // ... and so on, for each detail you want to display
   } catch (error) {

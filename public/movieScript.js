@@ -57,8 +57,8 @@ document.getElementById('submit-review-form').addEventListener('submit', async (
 
 document.querySelectorAll('.delete-review').forEach((button) => {
   button.addEventListener('click', async function deleteReview() {
-    const reviewId = this.parentElement.id;
-    const movieId = document.getElementById('movieId').value;
+    const reviewId = this.dataset.id; // dataset accesses all data-* attributes
+    const movieId = document.getElementById('movie-id').value;
     const response = await fetch(`/movies/${movieId}/reviews/${reviewId}`, {
       method: 'DELETE',
     });

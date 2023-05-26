@@ -6,8 +6,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= movie.title %></title>
-    <link rel="stylesheet" href="styles/movie.css">
-    <link rel="stylesheet" href="styles/button.css">
+    <link rel="stylesheet" href="/styles/movie.css">
+    <link rel="stylesheet" href="/styles/button.css">
     <script src="/movieScript.js" defer></script>
 </head>
 <body>
@@ -35,12 +35,12 @@
                 </p>
                 <p>Rating: <%= review.rating %></p>
                 <p>Review: <%= review.review %></p>
-                <button class="delete-review">
+                <button class="delete-review" data-id="<%= review._id %>">
                     <span class="button_lg">
                         <span class="button_sl"></span>
                         <span class="button_text">Delete Review</span>
                     </span>
-                </button>            
+                </button>
             </div>
         <% }); %>
 
