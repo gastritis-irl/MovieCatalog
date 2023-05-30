@@ -243,6 +243,10 @@ app.get('/api/movies/:id', async (req, res) => {
 
   try {
     const movie = await Movie.findById(id);
+    if (!movie) {
+      return res.status(404).json({ success: false, message: 'Movie not found' });
+    }
+
     const reviews = await Review.find({ movieId: id });
     const users = await User.find();
 
@@ -253,6 +257,7 @@ app.get('/api/movies/:id', async (req, res) => {
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
   }
+  return null;
 });
 
 app.get('/reviews', async (req, res) => {
