@@ -24,8 +24,6 @@ app.use((req, res, next) => {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
-// app.use('movies/public/uploads', express.static('public/uploads'));
-// app.use('/public/uploads', express.static('uploads'));
 
 app.set('view engine', 'ejs');
 
@@ -239,23 +237,6 @@ app.get('/movies', async (req, res) => {
     res.status(400).json({ success: false, message: error.message });
   }
 });
-
-// app.get('/movies/:id', async (req, res) => {
-//   const { id } = req.params;
-
-//   try {
-//     const movie = await Movie.findById(id);
-//     const reviews = await Review.find({ movieId: id });
-//     const users = await User.find();
-
-//     // Calculate the average rating
-//     const averageRating = reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length;
-
-//     res.render('movie', { movie, reviews, users, averageRating });
-//   } catch (error) {
-//     res.status(400).json({ success: false, message: error.message });
-//   }
-// });
 
 app.get('/api/movies/:id', async (req, res) => {
   const { id } = req.params;
