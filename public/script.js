@@ -1,5 +1,3 @@
-// Purpose: Client-side JavaScript for the movie app
-//
 // Path: \public\script.js
 
 async function addMovie(formData) {
@@ -52,6 +50,7 @@ document.getElementById('add-movie-form').addEventListener('submit', async (e) =
 function createMovieDiv(movie) {
   const movieDiv = document.createElement('div');
   movieDiv.className = 'movie';
+  movieDiv.id = movie._id;
 
   const title = document.createElement('h3');
   title.textContent = movie.title;
@@ -69,7 +68,69 @@ function createMovieDiv(movie) {
   description.textContent = `Description: ${movie.description}`;
   movieDiv.appendChild(description);
 
+  const detailsButton = document.createElement('button');
+  detailsButton.className = 'detail';
+  detailsButton.textContent = 'Show Details';
+
+  const extraInfoDiv = document.createElement('div');
+  extraInfoDiv.className = 'extra-info';
+  extraInfoDiv.style.display = 'none';
+  movieDiv.appendChild(extraInfoDiv);
+
+  // Add event listener to the details button
+  detailsButton.addEventListener('click', async () => {
+    // Fetch and display movie details
+    try {
+      const response = await fetch(`/movies/${movie._id}`);
+      const movieDetails = await response.json();
+
+      if (response.ok) {
+        extraInfoDiv.textContent = `More Details: Genre - ${movieDetails.genre}, Description - ${movieDetails.description}`;
+        extraInfoDiv.style.display = 'block';
+      } else {
+        throw new Error(`Error fetching movie details: ${response.status}`);
+      }
+    } catch (error) {
+      alert(error.message);
+      console.error(error);
+    }
+  });
+
   return movieDiv;
+}
+
+async function showDetails(event) {
+  const movieId = event.target.parentElement.parentElement.id;
+  console.log('Movie ID:', movieId);
+  try {
+    const response = await fetch(`/api/movies/${movieId}`);
+
+    if (!response.ok) {
+      throw new Error(`Error fetching movie details: ${response.status}`);
+    }
+
+    const movieDetails = await response.json();
+
+    // Update the movie details in the DOM
+    const infoDiv = this.nextElementSibling;
+    infoDiv.style.display = 'block';
+
+    // Clear the content of infoDiv if there's anything in it
+    infoDiv.innerHTML = '';
+
+    const movieGenre = document.createElement('p');
+    movieGenre.textContent = `Genre: ${movieDetails.movie.genre}`;
+    movieGenre.classList.add('detail');
+    infoDiv.appendChild(movieGenre);
+
+    const movieDescription = document.createElement('p');
+    movieDescription.textContent = `Description: ${movieDetails.movie.description}`;
+    movieDescription.classList.add('detail');
+    infoDiv.appendChild(movieDescription);
+  } catch (error) {
+    alert(`Error fetching movie details: ${error.message}`);
+    console.error('Error fetching movie details:', error);
+  }
 }
 
 function displaySearchResults(results) {
@@ -80,6 +141,8 @@ function displaySearchResults(results) {
     results.data.forEach((movie) => {
       const movieDiv = createMovieDiv(movie);
       searchResultsDiv.appendChild(movieDiv);
+      const detailsButton = movieDiv.querySelector('.details');
+      detailsButton.addEventListener('click', showDetails);
     });
   } else {
     const errorMessage = document.createElement('p');
@@ -98,4 +161,8 @@ document.getElementById('search-movies-form').addEventListener('submit', async (
   } catch (error) {
     alert(error.message);
   }
+});
+
+document.querySelectorAll('.details').forEach((button) => {
+  button.addEventListener('click', showDetails);
 });

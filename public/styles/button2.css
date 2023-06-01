@@ -1,0 +1,50 @@
+button {
+  width: 10em;
+  position: relative;
+  height: 3.5em;
+  border: 3px ridge #149CEA;
+  outline: none;
+  background-color: transparent;
+  color: rgb(0, 162, 226);
+  transition: 1s;
+  border-radius: 0.3em;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+button.onbackground {
+  color: rgb(71, 192, 172);
+  /* box-shadow: inset 0px 0px 25px #1479EA; */
+}
+
+button::after {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 3%;
+  width: 95%;
+  height: 40%;
+  background-color: transparent;
+  transition: 0.5s;
+  transform-origin: center;
+}
+
+button::before {
+  content: "";
+  transform-origin: center;
+  position: absolute;
+  top: 80%;
+  left: 3%;
+  width: 95%;
+  height: 40%;
+  background-color: transparent;
+  transition: 0.5s;
+}
+
+button:hover::before, button:hover::after {
+  transform: scale(1)
+}
+
+button:hover {
+  box-shadow: inset 0px 0px 25px #1479EA;
+}

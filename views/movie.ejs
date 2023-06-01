@@ -6,11 +6,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= movie.title %></title>
-    <link rel="stylesheet" href="/movie.css">
+    <link rel="stylesheet" href="/styles/movie.css">
+    <link rel="stylesheet" href="/styles/button.css">
+    <!-- <link rel="stylesheet" href="/styles/button2.css"> -->
+    <link rel="stylesheet" href="/styles/detailsPage.css">
+    <link rel="stylesheet" href="/styles/fileform.css">
     <script src="/movieScript.js" defer></script>
 </head>
 <body>
-    <h1><%= movie.title %></h1>
+    <h1 class="centered-title"> <%= movie.title %></h1>
 
     <div class="container">
         <img src="<%= (movie?.coverImage?.replace('public\\uploads\\', '/uploads/')) || '/img/fnf404.jpg' %>" alt="<%= movie?.title || 'Movie not found' %>">
@@ -34,6 +38,12 @@
                 </p>
                 <p>Rating: <%= review.rating %></p>
                 <p>Review: <%= review.review %></p>
+                <button class="delete-review" data-id="<%= review._id %>">
+                    <span class="button_lg">
+                        <span class="button_sl"></span>
+                        <span class="button_text">Delete Review</span>
+                    </span>
+                </button>
             </div>
         <% }); %>
 
@@ -48,7 +58,7 @@
 
             <label for="review-text">Review:</label>
             <textarea id="review-text" name="review" required></textarea><br>
-            <label for="user">User:</label>
+            <label for="user-id">User:</label>
             
             <select id="user-id" name="userId" required onchange="updateUserId()">
                 <% users.forEach(user => { %>

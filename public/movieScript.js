@@ -1,5 +1,3 @@
-// Purpose: To handle the movie page
-//
 // Path: \public\movieScript.js
 
 async function submitReview(reviewData) {
@@ -55,4 +53,26 @@ document.getElementById('submit-review-form').addEventListener('submit', async (
   } catch (error) {
     alert(`Error submitting review: ${error.message || 'Please check your input and try again.'}`);
   }
+});
+
+document.querySelectorAll('.delete-review').forEach((button) => {
+  button.addEventListener('click', async function deleteReview() {
+    const reviewId = this.dataset.id; // dataset accesses all data-* attributes
+    const movieId = document.getElementById('movie-id').value;
+    try {
+      const response = await fetch(`/movies/${movieId}/reviews/${reviewId}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        this.parentElement.remove();
+        alert('Review deleted successfully');
+      } else {
+        const errorData = await response.json().catch((err) => console.error(err));
+        throw new Error(errorData?.message || 'Error deleting review');
+      }
+    } catch (error) {
+      alert('Failed to delete review');
+    }
+  });
 });

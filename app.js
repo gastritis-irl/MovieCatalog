@@ -24,8 +24,6 @@ app.use((req, res, next) => {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
-// app.use('movies/public/uploads', express.static('public/uploads'));
-// app.use('/public/uploads', express.static('uploads'));
 
 app.set('view engine', 'ejs');
 
@@ -51,7 +49,7 @@ function validateReviewData(req, res, next) {
   if (!reviewData.movieId) {
     return res.status(400).json({ success: false, message: 'Movie ID is required' });
   }
-  if (!reviewData.rating || Number.isNaN(reviewData.rating) || reviewData.rating <= 1 || reviewData.rating >= 10) {
+  if (!reviewData.rating || Number.isNaN(reviewData.rating) || reviewData.rating < 1 || reviewData.rating > 10) {
     return res.status(400).json({ success: false, message: 'Rating should be a number between 1 and 10' });
   }
   if (!reviewData.review) {
@@ -240,6 +238,28 @@ app.get('/movies', async (req, res) => {
   }
 });
 
+app.get('/api/movies/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const movie = await Movie.findById(id);
+    if (!movie) {
+      return res.status(404).json({ success: false, message: 'Movie not found' });
+    }
+
+    const reviews = await Review.find({ movieId: id });
+    const users = await User.find();
+
+    // Structure the response data as needed, this is just a simple example
+    const response = { movie, reviews, users };
+
+    res.json(response);
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+  return null;
+});
+
 app.get('/reviews', async (req, res) => {
   const { movieId } = req.query;
 
@@ -256,6 +276,33 @@ app.get('/reviews', async (req, res) => {
     return res.status(500).json({ success: false, message: 'Error fetching reviews' });
   }
 });
+
+app.delete(
+  '/movies/:movieId/reviews/:reviewId',
+  /* verifyToken, */ async (req, res) => {
+    try {
+      const { movieId, reviewId } = req.params;
+      console.log('Deleting review with id:', reviewId, 'for movie:', movieId);
+
+      // First, check if the review with the provided ID exists
+      const review = await Review.findOne({ _id: reviewId, movieId });
+
+      console.log('Review found:', review);
+
+      if (!review) {
+        return res.status(404).json({ success: false, message: 'Review not found' });
+      }
+
+      // Then delete it
+      await Review.deleteOne({ _id: reviewId });
+
+      return res.json({ success: true, message: 'Review deleted successfully' });
+    } catch (error) {
+      console.error('Error deleting the review:', error);
+      return res.status(500).json({ success: false, message: 'Error deleting the review' });
+    }
+  },
+);
 
 const PORT = process.env.PORT || 1234;
 
