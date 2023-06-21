@@ -35,17 +35,21 @@ async function getMovies(formData) {
   return response.json();
 }
 
-document.getElementById('add-movie-form').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const formData = new FormData(e.target);
+// check if the form exists before adding event listener
+const addMovieForm = document.getElementById('add-movie-form');
+if (addMovieForm) {
+  addMovieForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
 
-  try {
-    const result = await addMovie(formData);
-    alert(`Movie added with ID: ${result.movie._id}`);
-  } catch (error) {
-    alert(error.message);
-  }
-});
+    try {
+      const result = await addMovie(formData);
+      alert(`Movie added with ID: ${result.movie._id}`);
+    } catch (error) {
+      alert(error.message);
+    }
+  });
+}
 
 function createMovieDiv(movie) {
   const movieDiv = document.createElement('div');
@@ -150,19 +154,80 @@ function displaySearchResults(results) {
     searchResultsDiv.appendChild(errorMessage);
   }
 }
+async function fetchWithAuth(url, options = {}) {
+  const token = localStorage.getItem('authToken');
+  options.headers = {
+    ...options.headers,
+    Authorization: `Bearer ${token}`,
+  };
 
-document.getElementById('search-movies-form').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const formData = new FormData(e.target);
-
-  try {
-    const results = await getMovies(formData);
-    displaySearchResults(results);
-  } catch (error) {
-    alert(error.message);
+  const response = await fetch(url, options);
+  if (!response.ok) {
+    throw new Error(`Error making request to ${url}: ${response.status}`);
   }
-});
+
+  return response.json();
+}
+
+// Use the fetchWithAuth function when making requests
+const searchMoviesForm = document.getElementById('search-movies-form');
+if (searchMoviesForm) {
+  searchMoviesForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+
+    try {
+      const results = await getMovies(formData, fetchWithAuth);
+      displaySearchResults(results);
+    } catch (error) {
+      alert(error.message);
+    }
+  });
+}
 
 document.querySelectorAll('.details').forEach((button) => {
   button.addEventListener('click', showDetails);
 });
+
+async function loginUser(formData) {
+  const response = await fetch('/login', {
+    method: 'POST',
+    body: JSON.stringify(Object.fromEntries(formData)),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error('Error logging in');
+  }
+
+  return response.json();
+}
+
+// Check if the login form exists before adding event listener
+const loginForm = document.getElementById('login-form');
+if (loginForm) {
+  loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+
+    try {
+      const { token, username, role } = await loginUser(formData);
+      localStorage.setItem('authToken', token);
+      localStorage.setItem('username', username);
+      localStorage.setItem('role', role);
+    } catch (error) {
+      alert(error.message);
+    }
+  });
+}
+
+const logoutButton = document.getElementById('logout-button');
+if (logoutButton) {
+  logoutButton.addEventListener('click', () => {
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('username');
+    localStorage.removeItem('role');
+  });
+}

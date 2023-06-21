@@ -3,15 +3,20 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User.js');
+const config = require('../config.js');
 
 exports.registerUser = async (req, res) => {
   const { username, password } = req.body;
 
-  const user = new User({ username, password });
+  const user = new User({ username, password, role: 'user' });
 
   try {
     await user.save();
-    res.json({ username: user.username, _id: user._id });
+    const token = jwt.sign({ _id: user._id, role: user.role, username: user.username }, config.JWT_SECRET_KEY, {
+      expiresIn: '1h',
+    });
+    res.cookie('token', token, { httpOnly: true });
+    res.status(200).json({ message: 'User registered successfully!' });
   } catch (err) {
     res.status(400).send(err);
   }
@@ -31,9 +36,11 @@ exports.loginUser = async (req, res) => {
       return res.status(400).send('Invalid password');
     }
 
-    const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET_KEY);
-
-    res.header('auth-token', token).json(token);
+    const token = jwt.sign({ _id: user._id, role: user.role, username: user.username }, config.JWT_SECRET_KEY, {
+      expiresIn: '1h',
+    });
+    res.cookie('token', token, { httpOnly: true });
+    res.status(200).json({ message: 'User logged in successfully!' });
   } catch (err) {
     res.status(500).send(err);
   }
@@ -41,11 +48,23 @@ exports.loginUser = async (req, res) => {
 };
 
 exports.logout = (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      return res.status(500).send('Could not log out. Please try again');
-    }
-    res.clearCookie('connect.sid');
-    return res.redirect('/');
-  });
+  res.clearCookie('token');
+  return res.redirect('/');
+};
+
+exports.verifyToken = (req, res, next) => {
+  const { token } = req.cookies;
+
+  if (!token) {
+    return res.status(403).send('Unauthorized');
+  }
+
+  try {
+    const verified = jwt.verify(token, config.JWT_SECRET_KEY);
+    req.user = verified;
+    next();
+  } catch (err) {
+    res.status(400).send('Invalid Token');
+  }
+  return null;
 };

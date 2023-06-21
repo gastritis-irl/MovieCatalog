@@ -3,6 +3,7 @@
 const Movie = require('../models/Movie.js');
 const Review = require('../models/Review.js');
 const User = require('../models/User.js');
+// const isAdmin = require('../utils/isAdmin.js');
 const { validateMovieData } = require('../utils/validate.js');
 
 exports.getMovies = async (req, res, next) => {
@@ -18,9 +19,11 @@ exports.getMovieById = async (req, res, next) => {
   try {
     const movie = await Movie.findById(req.params.id);
     if (!movie) {
-      return res.status(404).json({ success: false, message: 'Movie not found' });
+      return res.status(404).render('404');
     }
-    res.status(200).json({ success: true, data: movie });
+    const reviews = await Review.find({ movieId: req.params.id });
+    const users = await User.find();
+    res.render('movie', { movie, reviews, users });
   } catch (err) {
     next(err);
   }
@@ -59,6 +62,21 @@ exports.getApiMovieById = async (req, res, next) => {
     const response = { movie, reviews, users };
 
     res.status(200).json({ success: true, data: response });
+  } catch (err) {
+    next(err);
+  }
+  return null;
+};
+
+exports.deleteMovie = async (req, res, next) => {
+  try {
+    const movie = await Movie.findById(req.params.id);
+    if (!movie) {
+      return res.status(404).json({ success: false, message: 'Movie not found' });
+    }
+
+    await Movie.deleteOne({ _id: req.params.id });
+    res.status(200).json({ success: true, message: 'Movie deleted successfully' });
   } catch (err) {
     next(err);
   }

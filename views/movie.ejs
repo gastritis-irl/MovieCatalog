@@ -38,7 +38,7 @@
                 </p>
                 <p>Rating: <%= review.rating %></p>
                 <p>Review: <%= review.review %></p>
-                <button class="delete-review" data-id="<%= review._id %>">
+                <button class="delete-review" data-id="<%= review._id %>" <% if (!user || user.role !== 'admin') { %> style="display: none;" <% } %> >
                     <span class="button_lg">
                         <span class="button_sl"></span>
                         <span class="button_text">Delete Review</span>
