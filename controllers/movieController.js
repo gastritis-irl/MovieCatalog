@@ -1,5 +1,6 @@
 // Path: controllers\movieController.js
 
+const jwt = require('jsonwebtoken');
 const Movie = require('../models/Movie.js');
 const Review = require('../models/Review.js');
 const User = require('../models/User.js');
@@ -8,10 +9,30 @@ const { validateMovieData } = require('../utils/validate.js');
 
 exports.getMovies = async (req, res, next) => {
   try {
-    const movies = await Movie.find({});
-    res.status(200).json({ success: true, data: movies });
-  } catch (err) {
-    next(err);
+    const token = req.headers.authorization?.split(' ')[1];
+    let user;
+
+    if (token) {
+      try {
+        user = jwt.verify(token, process.env.JWT_SECRET);
+      } catch (err) {
+        res.status(401).send('Failed to authenticate token');
+      }
+    }
+
+    const { title, genre, minYear, maxYear } = req.query;
+    const query = Movie.find();
+
+    if (title) query.where('title', new RegExp(title, 'i'));
+    if (genre) query.where('genre', genre);
+    if (minYear) query.where('releaseYear').gte(minYear);
+    if (maxYear) query.where('releaseYear').lte(maxYear);
+
+    const movies = await query.exec();
+    console.log('Found Movies:', movies);
+    res.json({ success: true, data: movies, user });
+  } catch (error) {
+    next(error);
   }
 };
 
