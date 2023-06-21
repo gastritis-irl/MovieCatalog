@@ -196,6 +196,7 @@ async function loginUser(formData) {
     headers: {
       'Content-Type': 'application/json',
     },
+    credentials: 'include',
   });
 
   if (!response.ok) {
@@ -205,7 +206,6 @@ async function loginUser(formData) {
   return response.json();
 }
 
-// Check if the login form exists before adding event listener
 const loginForm = document.getElementById('login-form');
 if (loginForm) {
   loginForm.addEventListener('submit', async (e) => {
@@ -213,10 +213,16 @@ if (loginForm) {
     const formData = new FormData(e.target);
 
     try {
-      const { token, username, role } = await loginUser(formData);
+      const response = await loginUser(formData);
+      console.log(response); // log the response to see what's returned
+
+      const { token, username, role } = response;
       localStorage.setItem('authToken', token);
       localStorage.setItem('username', username);
       localStorage.setItem('role', role);
+
+      // Redirect to the home page after successful login
+      window.location.href = '/';
     } catch (error) {
       alert(error.message);
     }

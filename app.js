@@ -55,17 +55,16 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-app.get('/', async (req, res) => {
+app.get('/', verifyToken, async (req, res) => {
   const token = req.headers.authorization?.split(' ')[1];
-
-  if (!token) {
-    return res.status(403).send('No token provided');
-  }
   let user;
-  try {
-    user = jwt.verify(token, process.env.JWT_SECRET);
-  } catch (err) {
-    return res.status(401).send('Failed to authenticate token');
+
+  if (token) {
+    try {
+      user = jwt.verify(token, process.env.JWT_SECRET);
+    } catch (err) {
+      return res.status(401).send('Failed to authenticate token');
+    }
   }
 
   const { title, genre, minYear, maxYear } = req.query;

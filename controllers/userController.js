@@ -33,14 +33,19 @@ exports.loginUser = async (req, res) => {
 
     const validPassword = await bcrypt.compare(password, user.password);
     if (!validPassword) {
-      return res.status(400).send('Invalid password');
+      res.status(400).send('Invalid password');
     }
 
     const token = jwt.sign({ _id: user._id, role: user.role, username: user.username }, config.JWT_SECRET_KEY, {
       expiresIn: '1h',
     });
     res.cookie('token', token, { httpOnly: true });
-    res.status(200).json({ message: 'User logged in successfully!' });
+    res.status(200).json({
+      message: 'User logged in successfully!',
+      token,
+      username,
+      role: user.role,
+    });
   } catch (err) {
     res.status(500).send(err);
   }
