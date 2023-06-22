@@ -14,14 +14,10 @@ async function addMovie(formData) {
 }
 
 async function getMovies(formData) {
-  formData.set('title', formData.get('search-title'));
-  formData.set('genre', formData.get('search-genre'));
-  formData.set('minYear', formData.get('min-year'));
-  formData.set('maxYear', formData.get('max-year'));
-  formData.delete('search-title');
-  formData.delete('search-genre');
-  formData.delete('min-year');
-  formData.delete('max-year');
+  formData.set('title', formData.get('title'));
+  formData.set('genre', formData.get('genre'));
+  formData.set('minYear', formData.get('minYear'));
+  formData.set('maxYear', formData.get('maxYear'));
   const queryParams = new URLSearchParams(formData).toString();
 
   const response = await fetch(`/movies?${queryParams}`, {
@@ -139,14 +135,13 @@ async function showDetails(event) {
 
 function displaySearchResults(results) {
   const searchResultsDiv = document.getElementById('search-results');
+  console.log('Search Results Div:', searchResultsDiv);
   searchResultsDiv.innerHTML = '';
 
   if (results.success) {
     results.data.forEach((movie) => {
       const movieDiv = createMovieDiv(movie);
       searchResultsDiv.appendChild(movieDiv);
-      const detailsButton = movieDiv.querySelector('.details');
-      detailsButton.addEventListener('click', showDetails);
     });
   } else {
     const errorMessage = document.createElement('p');
@@ -154,6 +149,10 @@ function displaySearchResults(results) {
     searchResultsDiv.appendChild(errorMessage);
   }
 }
+document.querySelectorAll('.details').forEach((button) => {
+  button.addEventListener('click', showDetails);
+});
+
 async function fetchWithAuth(url, options = {}) {
   const token = localStorage.getItem('authToken');
   options.headers = {
@@ -170,23 +169,17 @@ async function fetchWithAuth(url, options = {}) {
 }
 
 // Use the fetchWithAuth function when making requests
-const searchMoviesForm = document.getElementById('search-movies-form');
-if (searchMoviesForm) {
-  searchMoviesForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
 
-    try {
-      const results = await getMovies(formData, fetchWithAuth);
-      displaySearchResults(results);
-    } catch (error) {
-      alert(error.message);
-    }
-  });
-}
-
-document.querySelectorAll('.details').forEach((button) => {
-  button.addEventListener('click', showDetails);
+document.getElementById('search-movies-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const formData = new FormData(e.target);
+  console.log('Form Data:', [...formData]);
+  try {
+    const results = await getMovies(formData, fetchWithAuth);
+    displaySearchResults(results);
+  } catch (error) {
+    alert(error.message);
+  }
 });
 
 const logoutButton = document.getElementById('logout-button');

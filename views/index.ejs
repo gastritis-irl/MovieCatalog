@@ -23,7 +23,7 @@
 <% } %>
 </nav>
 
-<% if (user && user.role === 'admin') { %>
+<% if (user) { %>
     <h2>Add Movie</h2>
     <form class="form" id="add-movie-form" action="/add-movie" method="post" enctype="multipart/form-data">
         <label for="title">Title:</label>

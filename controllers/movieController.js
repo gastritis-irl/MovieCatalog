@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const Movie = require('../models/Movie.js');
 const Review = require('../models/Review.js');
 const User = require('../models/User.js');
+const config = require('../config.js');
 // const isAdmin = require('../utils/isAdmin.js');
 const { validateMovieData } = require('../utils/validate.js');
 
@@ -14,13 +15,14 @@ exports.getMovies = async (req, res, next) => {
 
     if (token) {
       try {
-        user = jwt.verify(token, process.env.JWT_SECRET);
+        user = jwt.verify(token, config.JWT_SECRET);
       } catch (err) {
         res.status(401).send('Failed to authenticate token');
       }
     }
 
     const { title, genre, minYear, maxYear } = req.query;
+    console.log('Query:', req.query);
     const query = Movie.find();
 
     if (title) query.where('title', new RegExp(title, 'i'));
