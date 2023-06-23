@@ -157,6 +157,20 @@ document.getElementById('search-movies-form').addEventListener('submit', async (
   }
 });
 
+// async function logoutUser() {
+//   const response = await fetch('/logout', {
+//     method: 'GET',
+//     credentials: 'same-origin',  // This is required for cookies to be sent
+//   });
+
+//   if (response.ok) {
+//     document.getElementById('welcome-user').style.display = 'none';
+//     // Modify other parts of the UI to reflect that the user is logged out
+//   } else {
+//     console.error('Failed to logout');
+//   }
+// }
+
 const logoutButton = document.getElementById('logout-button');
 if (logoutButton) {
   logoutButton.addEventListener('click', () => {

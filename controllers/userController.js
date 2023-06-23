@@ -37,7 +37,7 @@ exports.loginUser = async (req, res, next) => {
     const token = jwt.sign({ _id: user._id, role: user.role, username: user.username }, config.JWT_SECRET_KEY, {
       expiresIn: '1h',
     });
-    res.cookie('token', token, { httpOnly: true });
+    res.cookie('auth-token', token, { httpOnly: true });
     res.status(200).json({
       message: 'User logged in successfully!',
       token,
@@ -49,9 +49,10 @@ exports.loginUser = async (req, res, next) => {
   }
 };
 
+// UserController.js
 exports.logout = (req, res) => {
-  res.clearCookie('token');
-  return res.redirect('/');
+  res.clearCookie('auth-token');
+  res.status(200).json({ message: 'Logged out successfully' });
 };
 
 exports.verifyToken = (req, res, next) => {
