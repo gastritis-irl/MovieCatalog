@@ -1,4 +1,6 @@
-async function registerUser(formData) {
+// Path: public\login.js
+
+async function loginUser(formData) {
   const response = await fetch('/login', {
     method: 'POST',
     body: JSON.stringify(Object.fromEntries(formData)),
@@ -22,7 +24,7 @@ if (loginForm) {
     const formData = new FormData(e.target);
 
     try {
-      const response = await registerUser(formData);
+      const response = await loginUser(formData);
       console.log(response); // log the response to see what's returned
 
       const { token, username, role } = response;

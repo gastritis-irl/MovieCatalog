@@ -5,7 +5,8 @@ const User = require('../models/User.js');
 const config = require('../config.js');
 
 async function verifyToken(req, res, next) {
-  const token = req.header('auth-token');
+  // Get the token from the cookies
+  const token = req.cookies['auth-token'];
   if (!token) return next(); // If there's no token, continue without error
 
   try {

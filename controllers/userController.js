@@ -1,16 +1,12 @@
 // Path: controllers\userController.js
 
-const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User.js');
 const config = require('../config.js');
 
-exports.registerUser = async (req, res) => {
-  const { username, password } = req.body;
-
-  const user = new User({ username, password, role: 'user' });
-
+exports.registerUser = async (req, res, next) => {
   try {
+    const user = new User(req.body);
     await user.save();
     const token = jwt.sign({ _id: user._id, role: user.role, username: user.username }, config.JWT_SECRET_KEY, {
       expiresIn: '1h',
@@ -18,22 +14,24 @@ exports.registerUser = async (req, res) => {
     res.cookie('token', token, { httpOnly: true });
     res.status(200).json({ message: 'User registered successfully!' });
   } catch (err) {
-    res.status(400).send(err);
+    next(err); // delegate error handling to middleware
   }
 };
 
-exports.loginUser = async (req, res) => {
-  const { username, password } = req.body;
-
+exports.loginUser = async (req, res, next) => {
   try {
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ username: req.body.username });
     if (!user) {
-      return res.status(400).send('User not found');
+      const error = new Error('User not found');
+      error.status = 401;
+      throw error;
     }
 
-    const validPassword = await bcrypt.compare(password, user.password);
+    const validPassword = await user.checkPassword(req.body.password);
     if (!validPassword) {
-      res.status(400).send('Invalid password');
+      const error = new Error('Invalid password');
+      error.status = 401;
+      throw error;
     }
 
     const token = jwt.sign({ _id: user._id, role: user.role, username: user.username }, config.JWT_SECRET_KEY, {
@@ -43,13 +41,12 @@ exports.loginUser = async (req, res) => {
     res.status(200).json({
       message: 'User logged in successfully!',
       token,
-      username,
+      username: user.username,
       role: user.role,
     });
   } catch (err) {
-    res.status(500).send(err);
+    next(err); // delegate error handling to middleware
   }
-  return null;
 };
 
 exports.logout = (req, res) => {
@@ -61,7 +58,9 @@ exports.verifyToken = (req, res, next) => {
   const { token } = req.cookies;
 
   if (!token) {
-    return res.status(403).send('Unauthorized');
+    const error = new Error('Unauthorized');
+    error.status = 403;
+    throw error;
   }
 
   try {
@@ -69,7 +68,22 @@ exports.verifyToken = (req, res, next) => {
     req.user = verified;
     next();
   } catch (err) {
-    res.status(400).send('Invalid Token');
+    const error = new Error('Invalid Token');
+    error.status = 400;
+    throw error;
+  }
+};
+
+exports.getMe = async (req, res, next) => {
+  try {
+    // Verify the token and return the user's details
+    const user = await User.findById(req.user.username).select('-password');
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+    res.json(user);
+  } catch (err) {
+    next(err);
   }
   return null;
 };
