@@ -21,11 +21,16 @@ const MovieSchema = new mongoose.Schema({
   genre: {
     type: String,
     required: [true, 'Please add a genre'],
-    enum: ['Action', 'Adventure', 'Comedy', 'Drama', 'Fantasy', 'Horror', 'Mystery', 'Romance', 'Thriller', 'Western'], // add your own genres
+    // enum: ['Action', 'Adventure', 'Comedy', 'Drama', 'Fantasy', 'Horror', 'Mystery', 'Romance', 'Thriller', 'Western'], // add your own genres
   },
   coverImage: {
     type: String,
     default: 'default.jpg',
+  },
+  userId: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'User',
+    required: true,
   },
 });
 

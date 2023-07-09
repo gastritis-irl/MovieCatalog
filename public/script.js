@@ -1,50 +1,32 @@
 // Path: \public\script.js
 
-async function addMovie(formData) {
-  const response = await fetch('/add-movie', {
+async function addMovie(formData, fetchFunction = fetch) {
+  const response = await fetchFunction('/add-movie', {
     method: 'POST',
     body: formData,
   });
 
   if (!response.ok) {
+    console.log(response);
     throw new Error('Error adding movie');
   }
 
-  return response.json();
+  const responseData = await response.json(); // Convert response to JSON here
+  return responseData; // Return the response data
 }
 
-async function getMovies(formData) {
-  formData.set('title', formData.get('title'));
-  formData.set('genre', formData.get('genre'));
-  formData.set('minYear', formData.get('minYear'));
-  formData.set('maxYear', formData.get('maxYear'));
+async function getMovies(formData, fetchFunction = fetch) {
   const queryParams = new URLSearchParams(formData).toString();
 
-  const response = await fetch(`/movies?${queryParams}`, {
+  const response = await fetchFunction(`/movies?${queryParams}`, {
     method: 'GET',
   });
-
-  if (!response.ok) {
+  console.log(response);
+  if (!response.success) {
     throw new Error('Error searching movies');
   }
 
-  return response.json();
-}
-
-// check if the form exists before adding event listener
-const addMovieForm = document.getElementById('add-movie-form');
-if (addMovieForm) {
-  addMovieForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-
-    try {
-      const result = await addMovie(formData);
-      alert(`Movie added with ID: ${result.movie._id}`);
-    } catch (error) {
-      alert(error.message);
-    }
-  });
+  return response;
 }
 
 async function showDetails(event) {
@@ -108,6 +90,28 @@ function createMovieDiv(movie) {
   return movieDiv;
 }
 
+// check if the form exists before adding event listener
+const addMovieForm = document.getElementById('add-movie-form');
+if (addMovieForm) {
+  addMovieForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    console.log('Form Data:', [...formData]);
+
+    try {
+      const result = await addMovie(formData);
+      alert(`Movie added with ID: ${result.data._id}`);
+
+      // Create and display the new movie
+      const newMovieDiv = createMovieDiv(result.data);
+      const moviesList = document.getElementById('search-results'); // Assuming 'search-results' is the ID of your movies list
+      moviesList.appendChild(newMovieDiv);
+    } catch (error) {
+      alert(error.message);
+    }
+  });
+}
+
 function displaySearchResults(results) {
   const searchResultsDiv = document.getElementById('search-results');
   console.log('Search Results Div:', searchResultsDiv);
@@ -128,21 +132,6 @@ document.querySelectorAll('.details').forEach((button) => {
   button.addEventListener('click', showDetails);
 });
 
-async function fetchWithAuth(url, options = {}) {
-  const token = localStorage.getItem('authToken');
-  options.headers = {
-    ...options.headers,
-    Authorization: `Bearer ${token}`,
-  };
-
-  const response = await fetch(url, options);
-  if (!response.ok) {
-    throw new Error(`Error making request to ${url}: ${response.status}`);
-  }
-
-  return response.json();
-}
-
 // Use the fetchWithAuth function when making requests
 
 document.getElementById('search-movies-form').addEventListener('submit', async (e) => {
@@ -150,26 +139,12 @@ document.getElementById('search-movies-form').addEventListener('submit', async (
   const formData = new FormData(e.target);
   console.log('Form Data:', [...formData]);
   try {
-    const results = await getMovies(formData, fetchWithAuth);
+    const results = await getMovies(formData);
     displaySearchResults(results);
   } catch (error) {
     alert(error.message);
   }
 });
-
-// async function logoutUser() {
-//   const response = await fetch('/logout', {
-//     method: 'GET',
-//     credentials: 'same-origin',  // This is required for cookies to be sent
-//   });
-
-//   if (response.ok) {
-//     document.getElementById('welcome-user').style.display = 'none';
-//     // Modify other parts of the UI to reflect that the user is logged out
-//   } else {
-//     console.error('Failed to logout');
-//   }
-// }
 
 const logoutButton = document.getElementById('logout-button');
 if (logoutButton) {

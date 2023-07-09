@@ -20,6 +20,14 @@ const UserSchema = new mongoose.Schema({
     enum: ['admin', 'user', 'guest'],
     default: 'user',
   },
+  movies: {
+    type: [mongoose.Schema.ObjectId],
+    ref: 'Movie',
+  },
+  reviews: {
+    type: [mongoose.Schema.ObjectId],
+    ref: 'Review',
+  },
 });
 
 UserSchema.pre('save', async function save(next) {

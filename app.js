@@ -60,7 +60,7 @@ app.get('/', verifyToken, async (req, res) => {
 app.post('/register', userController.registerUser);
 app.post('/login', userController.loginUser);
 app.get('/logout', userController.logout);
-app.get('/movies', verifyToken, movieController.getMovies);
+app.get('/movies', movieController.getMovies);
 app.get('/movies/:id', verifyToken, movieController.getMovieById);
 app.post('/add-movie', verifyToken, upload.single('coverImage'), movieController.addMovie);
 app.get('/api/movies/:id', verifyToken, movieController.getApiMovieById);

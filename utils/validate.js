@@ -19,9 +19,9 @@ exports.validateReviewData = function validateReviewData(reviewData) {
   return { success: true };
 };
 
-exports.validateMovieData = function validateMovieData(data) {
+exports.validateMovieData = function validateMovieData(data, file) {
   if (!data.title) {
-    return { error: 'Title is required' };
+    return { error: { details: [{ message: 'Title is required' }] } };
   }
   if (
     !data.releaseYear ||
@@ -29,16 +29,23 @@ exports.validateMovieData = function validateMovieData(data) {
     data.releaseYear < 1800 ||
     data.releaseYear > new Date().getFullYear()
   ) {
-    return { error: 'Invalid release year' };
+    console.log('Invalid release year: ', data.releaseYear);
+    return { error: { details: [{ message: 'Invalid release year' }] } };
   }
   if (!data.description) {
-    return { error: 'Description is required' };
+    return { error: { details: [{ message: 'Description is required' }] } };
   }
   if (!data.genre) {
-    return { error: 'Genre is required' };
+    return { error: { details: [{ message: 'Genre is required' }] } };
   }
-  if (!data.coverImage) {
-    return { error: 'Cover image is required' };
+  // if (!data.coverImage) {
+  //   console.log('Cover image is required', data.coverImage);
+  //   console.log('Cover image is required', file);
+  //   return { error: { details: [{ message: 'Cover image is required' }] } };
+  // }
+  if (!file) {
+    console.log('Cover image is required', file);
+    return { error: { details: [{ message: 'Cover image is required' }] } };
   }
 
   return { success: true };

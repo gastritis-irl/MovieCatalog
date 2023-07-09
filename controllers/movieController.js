@@ -1,28 +1,26 @@
 // Path: controllers\movieController.js
 
-const jwt = require('jsonwebtoken');
 const Movie = require('../models/Movie.js');
 const Review = require('../models/Review.js');
 const User = require('../models/User.js');
-const config = require('../config.js');
 // const isAdmin = require('../utils/isAdmin.js');
 const { validateMovieData } = require('../utils/validate.js');
 
-exports.getMovies = async (req, res, next) => {
+exports.getMovies = async (req, res) => {
   try {
-    const token = req.headers.authorization?.split(' ')[1];
+    // const token = req.headers.authorization?.split(' ')[1];
     let user;
 
-    if (token) {
-      try {
-        user = jwt.verify(token, config.JWT_SECRET);
-      } catch (err) {
-        res.status(401).send('Failed to authenticate token');
-      }
-    }
+    // if (token) {
+    //   try {
+    //     user = jwt.verify(token, config.JWT_SECRET);
+    //   } catch (err) {
+    //     return res.status(401).send('Failed to authenticate token');
+    //   }
+    // }
 
     const { title, genre, minYear, maxYear } = req.query;
-    console.log('Query:', req.query);
+    // console.log('Query:', req.query);
     const query = Movie.find();
 
     if (title) query.where('title', new RegExp(title, 'i'));
@@ -31,11 +29,13 @@ exports.getMovies = async (req, res, next) => {
     if (maxYear) query.where('releaseYear').lte(maxYear);
 
     const movies = await query.exec();
-    console.log('Found Movies:', movies);
+    // console.log('Found Movies:', movies);
     res.json({ success: true, data: movies, user });
   } catch (error) {
-    next(error);
+    console.error(error);
+    res.status(500).json({ success: false, message: error.message });
   }
+  return null;
 };
 
 exports.getMovieById = async (req, res, next) => {
@@ -55,11 +55,16 @@ exports.getMovieById = async (req, res, next) => {
 
 exports.addMovie = async (req, res, next) => {
   try {
-    const { error, value } = validateMovieData(req.body);
-    if (error) {
-      return res.status(400).json({ success: false, message: error.details[0].message });
+    const validation = validateMovieData(req.body, req.file);
+    if (validation.error) {
+      console.log('Validation:', validation.error.details[0].message);
+      return res.status(400).json({ success: false, message: validation.error.details[0].message });
     }
-    const newMovie = new Movie(value);
+
+    const newMovie = new Movie(req.body);
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: 'No file provided.' });
+    }
     newMovie.coverImage = req.file.path;
     const movie = await newMovie.save();
     res.status(201).json({ success: true, data: movie });
