@@ -2,13 +2,25 @@
 
 <link rel="stylesheet" href="user.css" type="text/styles">
 <script src="login.js" defer></script>
-<h2>Login</h2>
+<link rel="stylesheet" href="styles/signin.css">
+<link rel="stylesheet" href="styles/styles.css">
+
 <form id="login-form" action="/login" method="post">
-    <label for="username">Username:</label>
-    <input type="text" id="username" name="username" required><br>
+    <div class="container">
+        <div class="card">
+            <a class="auth-label">Log in</a>
+            <div class="inputBox">
+                <input type="text" id="username" name="username" required="required"><br>
+                <span class="user">Username</span>
+            </div>
 
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" required><br>
+            <div class="inputBox">
+                <input type="password" id="password" name="password" required="required"><br>
+                <span>Password</span>
+            </div>
 
-    <button type="submit">Login</button>
+            <button class="enter" type="submit">Enter</button>
+
+        </div>
+    </div>
 </form>

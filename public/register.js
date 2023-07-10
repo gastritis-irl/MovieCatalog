@@ -17,9 +17,9 @@ async function registerUser(formData) {
   return response.json();
 }
 
-const loginForm = document.getElementById('register-form');
-if (loginForm) {
-  loginForm.addEventListener('submit', async (e) => {
+const registerForm = document.getElementById('register-form');
+if (registerForm) {
+  registerForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
 
@@ -32,8 +32,7 @@ if (loginForm) {
       localStorage.setItem('username', username);
       localStorage.setItem('role', role);
 
-      // Redirect to the home page after successful register
-      window.location.href = '/';
+      window.location.href = document.referrer || '/'; // fallback to '/' if document.referrer is empty
     } catch (error) {
       alert(error.message);
     }

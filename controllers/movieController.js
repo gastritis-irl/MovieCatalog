@@ -47,7 +47,7 @@ exports.getMovieById = async (req, res, next) => {
     const reviews = await Review.find({ movieId: req.params.id });
     const users = await User.find(); // fetch all users
     console.log('User:', req.user);
-    res.render('movie', { movie, reviews, users, user: req.user });
+    res.render('movie', { movie, reviews, users });
   } catch (err) {
     next(err);
   }

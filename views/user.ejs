@@ -13,8 +13,8 @@
 <body>
     <h1>User: <%= user.username %></h1>
     <nav>
-        <% if (user) { %>
-            <span>Welcome, <%= user.username %>!</span> | <a href="/logout">Logout</a>
+        <% if (locals.user) { %>
+            <span>Welcome, <%= locals.user.username %>!</span> | <a href="/logout" id="logout-button">Logout</a>
         <% } else { %>
             <a href="/login">Login</a> | <a href="/register">Register</a>
         <% } %>
@@ -24,7 +24,7 @@
         <% user.movies.forEach(function(movie){ %>
             <li>
                 <a href="/movies/<%= movie._id %>"><%= movie.title %></a>
-                <% if (typeof currentUserId !== 'undefined' && user._id.toString() === currentUserId.toString()) { %>
+                <% if (typeof locals.user !== 'undefined' && user._id.toString() === locals.user._id.toString()) { %>
                     <button onclick="deleteMovie('<%= movie._id %>')">Delete</button>
                 <% } %>
             </li>
@@ -40,7 +40,7 @@
         <% }); %>
     </ul>
 
-    <% if (typeof currentUserId !== 'undefined' && user._id.toString() === currentUserId.toString()) { %>
+    <% if (typeof locals.user !== 'undefined' && user._id.toString() === locals.user._id.toString()) { %>
     <a href="/add-movie">Add a movie</a>
     <h2>Add Movie</h2>
         <form id="add-movie-form" action="/api/movies" method="post">

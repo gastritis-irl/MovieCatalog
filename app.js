@@ -65,7 +65,7 @@ app.post('/add-movie', verifyToken, upload.single('coverImage'), movieController
 app.get('/api/movies/:id', verifyToken, movieController.getApiMovieById);
 app.post('/movies/:movieId/reviews', verifyToken, reviewController.addReview);
 app.get('/reviews', verifyToken, reviewController.getReviews);
-app.delete('/movies/:movieId/reviews/:reviewId', verifyToken, reviewController.deleteReview);
+app.delete('/movies/:movieId/reviews/:reviewId', verifyToken, reviewController.deleteReview); // Made the auth check inside the function
 app.delete('/movies/:movieId', verifyToken, isAdmin, movieController.deleteMovie);
 app.get('/users/:id', verifyToken, userController.getUserById);
 

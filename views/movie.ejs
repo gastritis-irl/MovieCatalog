@@ -17,8 +17,8 @@
     <h1 class="centered-title"> <%= movie.title %></h1>
 
     <nav>
-        <% if (user) { %>
-            <span>Welcome, <%= user.username %>!</span> | <a href="/logout">Logout</a>
+        <% if (locals.user) { %>
+            <span>Welcome, <%= locals.user.username %>!</span> | <a href="/logout">Logout</a>
         <% } else { %>
             <a href="/login">Login</a> | <a href="/register">Register</a>
         <% } %>
@@ -60,7 +60,7 @@
                 <p>Rating: <%= review.rating %></p>
                 <p>Review: <%= review.review %></p>
                 <button class="delete-review" data-id="<%= review._id %>" 
-                    <% if (!user || (user._id.toString() !== review.userId.toString() && user.role !== 'admin')) { %> style="display: none;" <% } %> >
+                    <% if (!locals.user || (locals.user._id.toString() !== review.userId.toString() && locals.user.role !== 'admin')) { %> style="display: none;" <% } %> >
                     <span class="button_lg">
                         <span class="button_sl"></span>
                         <span class="button_text">Delete Review</span>
@@ -68,7 +68,7 @@
                 </button>
             </div>
         <% }); %>
-        <% if (user) { %>
+        <% if (locals.user) { %>
             <h2>Add Review</h2>
             <form id="submit-review-form" action="/movies/<%= movie._id %>/reviews" method="post">
                 <input type="hidden" id="movie-id" name="movieId" value="<%= movie._id %>">

@@ -32,8 +32,7 @@ if (loginForm) {
       localStorage.setItem('username', username);
       localStorage.setItem('role', role);
 
-      // Redirect to the home page after successful login
-      window.location.href = '/';
+      window.location.href = document.referrer || '/'; // fallback to '/' if document.referrer is empty
     } catch (error) {
       alert(error.message);
     }

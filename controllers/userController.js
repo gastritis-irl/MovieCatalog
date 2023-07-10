@@ -77,7 +77,7 @@ exports.verifyToken = (req, res, next) => {
 
 exports.getUserById = async (req, res, next) => {
   try {
-    const user = await User.findById(req.params.id).populate('movies reviews');
+    const user = await User.findById(req.params.id);
     if (!user) {
       return res.status(404).render('404');
     }
@@ -85,7 +85,7 @@ exports.getUserById = async (req, res, next) => {
     // Check if a user is logged in
     if (req.user) {
       // Render the page with the currentUserId property if a user is logged in
-      res.render('user', { user, currentUserId: req.user._id });
+      res.render('user', { user, currentUser: req.user });
     } else {
       // Render the page without the currentUserId property if no user is logged in
       res.render('user', { user });

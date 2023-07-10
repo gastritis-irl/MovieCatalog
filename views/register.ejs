@@ -2,13 +2,27 @@
 
 <link rel="stylesheet" href="user.css">
 <script src="register.js" defer></script>
-<h2>Register</h2>
+<link rel="stylesheet" href="styles/signup.css">
+<link rel="stylesheet" href="styles/styles.css">
+
+<!-- <h2>Register</h2> -->
 <form id="register-form" action="/register" method="post">
-    <label for="username">Username:</label>
-    <input type="text" id="username" name="username" required><br>
+    <div class="container">
+        <div class="card">
+            <a class="auth-label">Sign Up</a>
 
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" required><br>
+            <div class="inputBox">
+                <input type="text" id="username" name="username" required="required">
+                <span>Username</span>
+            </div>
 
-    <button type="submit">Register</button>
+            <div class="inputBox">
+                <input type="password" id="password" name="password" required="required">
+                <span>Password</span>
+            </div>
+
+            <button class="enter" type="submit">Enter</button>
+
+        </div>
+    </div>
 </form>

@@ -156,4 +156,5 @@ if (logoutButton) {
     localStorage.removeItem('username');
     localStorage.removeItem('role');
   });
+  window.location.href = document.referrer || '/'; // fallback to '/' if document.referrer is empty
 }
