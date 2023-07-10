@@ -49,7 +49,6 @@ exports.loginUser = async (req, res, next) => {
   }
 };
 
-// UserController.js
 exports.logout = (req, res) => {
   res.clearCookie('auth-token');
   res.status(200).json({ message: 'Logged out successfully' });
@@ -94,4 +93,15 @@ exports.getUserById = async (req, res, next) => {
     next(err);
   }
   return null;
+};
+
+exports.getUsers = async (req, res, next) => {
+  try {
+    const users = await User.find();
+    // console.log('Found Users:', users);
+    res.json({ success: true, data: users });
+  } catch (error) {
+    next(error);
+    // res.status(500).json({ success: false, message: error.message });
+  }
 };

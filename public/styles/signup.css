@@ -1,7 +1,7 @@
 /* Path: public\styles\signup.css */
 
 .auth-label {
-  color: #0addcc;
+  color: #0077ff;
   text-transform: uppercase;
   letter-spacing: 2px;
   display: block;
@@ -39,8 +39,8 @@
   color: #000;
   font-size: 1em;
   background: transparent;
-  border-left: 2px solid #0addcc;
-  border-bottom: 2px solid #0addcc;
+  border-left: 2px solid #0077ff;
+  border-bottom: 2px solid #0077ff;
   transition: 0.1s;
   border-bottom-left-radius: 8px;
 }
@@ -55,7 +55,7 @@
   padding: 10px;
   pointer-events: none;
   font-size: 12px;
-  color: #0addcc;
+  color: #0077ff;
   text-transform: uppercase;
   transition: 0.5s;
   letter-spacing: 3px;
@@ -67,7 +67,7 @@
   transform: translateX(113px) translateY(-15px);
   font-size: 0.8em;
   padding: 5px 10px;
-  background: #0addcc;
+  background: #0077ff;
   letter-spacing: 0.2em;
   color: #000;
   border: 2px;
@@ -78,7 +78,7 @@
   transform: translateX(156px) translateY(-15px);
   font-size: 0.8em;
   padding: 5px 10px;
-  background: #0addcc;
+  background: #0077ff;
   letter-spacing: 0.2em;
   color: #000;
   border: 2px;
@@ -88,7 +88,7 @@
 .inputBox input:focus,
 .inputBox1 input:valid,
 .inputBox1 input:focus {
-  border: 2px solid #0addcc;
+  border: 2px solid #0077ff;
   border-radius: 8px;
 }
 
@@ -96,7 +96,7 @@
   height: 45px;
   width: 100px;
   border-radius: 5px;
-  border: 2px solid #0addcc;
+  border: 2px solid #0077ff;
   cursor: pointer;
   background-color: transparent;
   transition: 0.5s;

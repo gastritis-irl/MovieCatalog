@@ -79,3 +79,16 @@ img {
 .centered-title {
     text-align: center;
 }
+
+.welcome-text {
+  color: #f79400;
+  font-size: 1.8rem;
+  font-weight: 500;
+  margin-right: 10px;
+  transition: color 0.2s ease-in-out;
+}
+
+.welcome-text:hover {
+  color: rgba(255, 0, 0, 0.596)000;
+}
+

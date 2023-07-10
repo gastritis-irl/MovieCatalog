@@ -24,3 +24,7 @@ if (logoutButton) {
   });
   window.location.href = document.referrer || '/'; // fallback to '/' if document.referrer is empty
 }
+
+document.getElementById('home-button').addEventListener('click', () => {
+  window.location.href = '/';
+});

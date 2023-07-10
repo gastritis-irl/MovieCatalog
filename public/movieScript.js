@@ -63,10 +63,79 @@ document.querySelectorAll('.delete-review').forEach((button) => {
 
 const logoutButton = document.getElementById('logout-button');
 if (logoutButton) {
-  logoutButton.addEventListener('click', () => {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('username');
-    localStorage.removeItem('role');
+  logoutButton.addEventListener('click', async () => {
+    try {
+      const response = await fetch('/logout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'same-origin', // required to include cookies with the request
+      });
+
+      if (response.ok) {
+        // Clear local storage
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('username');
+        localStorage.removeItem('role');
+
+        alert('Logged out successfully');
+        window.location.reload();
+      } else {
+        const errorData = await response.json().catch((err) => console.error(err));
+        throw new Error(errorData?.message || 'Error during logout');
+      }
+    } catch (error) {
+      alert(`Error during logout: ${error.message || 'An unknown error occurred.'}`);
+    }
   });
-  window.location.href = document.referrer || '/'; // fallback to '/' if document.referrer is empty
 }
+
+const deleteMovieButton = document.getElementById('delete-movie-button');
+if (deleteMovieButton) {
+  deleteMovieButton.addEventListener('click', async () => {
+    const movieId = deleteMovieButton.dataset.id;
+    try {
+      const response = await fetch(`/movies/${movieId}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        alert('Movie deleted successfully');
+        window.location.href = '/';
+      } else {
+        const errorData = await response.json().catch((err) => console.error(err));
+        throw new Error(errorData?.message || 'Error deleting movie');
+      }
+    } catch (error) {
+      alert(`Error deleting movie: ${error.message || 'An unknown error occurred.'}`);
+    }
+  });
+}
+
+const deleteReviewButton = document.getElementById('delete-review-button');
+if (deleteReviewButton) {
+  deleteReviewButton.addEventListener('click', async () => {
+    const { movieId } = deleteReviewButton.dataset;
+    const { reviewId } = deleteReviewButton.dataset;
+    try {
+      const response = await fetch(`/movies/${movieId}/reviews/${reviewId}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        alert('Review deleted successfully');
+        window.location.reload();
+      } else {
+        const errorData = await response.json().catch((err) => console.error(err));
+        throw new Error(errorData?.message || 'Error deleting review');
+      }
+    } catch (error) {
+      alert(`Error deleting review: ${error.message || 'An unknown error occurred.'}`);
+    }
+  });
+}
+
+document.getElementById('home-button').addEventListener('click', () => {
+  window.location.href = '/';
+});

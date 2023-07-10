@@ -8,12 +8,18 @@
     <title>Online Film Collection</title>
     <link rel="stylesheet" href="styles/styles.css">
     <link rel="stylesheet" href="styles/button2.css">
+    <link rel="stylesheet" href="styles/logoutButton.css">
     <link rel="stylesheet" href="styles/detailsPage.css">
     <link rel="stylesheet" href="styles/fileform.css">
+    <link rel="stylesheet" href="styles/homebutton.css">
     <script src="script.js" defer></script>
 </head>
 <body>
     <h1>Online Film Collection - <% if (user) { %> Welcome, <%= user.username %> <% if (user.role === 'admin') { %> (Admin) <% } %> <% } %></h1>
+    
+    <button class="home-button" id="home-button">
+    ↑ Home Page
+    </button>
 
     <nav>
         <% if (user) { %>

@@ -58,7 +58,7 @@ app.get('/', verifyToken, async (req, res) => {
 // route definitions
 app.post('/register', verifyToken, userController.registerUser);
 app.post('/login', verifyToken, userController.loginUser);
-app.get('/logout', userController.logout);
+app.post('/logout', userController.logout);
 app.get('/movies', verifyToken, movieController.getMovies);
 app.get('/movies/:id', verifyToken, movieController.getMovieById);
 app.post('/add-movie', verifyToken, upload.single('coverImage'), movieController.addMovie);
@@ -68,6 +68,7 @@ app.get('/reviews', verifyToken, reviewController.getReviews);
 app.delete('/movies/:movieId/reviews/:reviewId', verifyToken, reviewController.deleteReview); // Made the auth check inside the function
 app.delete('/movies/:movieId', verifyToken, isAdmin, movieController.deleteMovie);
 app.get('/users/:id', verifyToken, userController.getUserById);
+app.get('/users', verifyToken, userController.getUsers);
 
 app.get('/register', (req, res) => {
   res.render('register');
