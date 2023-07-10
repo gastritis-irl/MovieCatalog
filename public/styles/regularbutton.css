@@ -1,0 +1,51 @@
+.regularbutton {
+  width: 10em;
+  position: relative;
+  height: 3.5em;
+  border: 3px ridge #149cea;
+  outline: none;
+  background-color: transparent;
+  color: rgb(0, 162, 226);
+  transition: 1s;
+  border-radius: 0.3em;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.regularbutton.onbackground {
+  color: rgb(71, 192, 172);
+  /* box-shadow: inset 0px 0px 25px #1479EA; */
+}
+
+.regularbutton::after {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 3%;
+  width: 95%;
+  height: 40%;
+  background-color: transparent;
+  transition: 0.5s;
+  transform-origin: center;
+}
+
+.regularbutton::before {
+  content: '';
+  transform-origin: center;
+  position: absolute;
+  top: 80%;
+  left: 3%;
+  width: 95%;
+  height: 40%;
+  background-color: transparent;
+  transition: 0.5s;
+}
+
+.regularbutton:hover::before,
+.regularbutton:hover::after {
+  transform: scale(1);
+}
+
+.regularbutton:hover {
+  box-shadow: inset 0px 0px 25px #1479ea;
+}

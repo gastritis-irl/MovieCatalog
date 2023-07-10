@@ -155,8 +155,8 @@ if (logoutButton) {
     localStorage.removeItem('authToken');
     localStorage.removeItem('username');
     localStorage.removeItem('role');
+    window.location.reload(); // fallback to '/' if document.referrer is empty
   });
-  window.location.href = document.referrer || '/'; // fallback to '/' if document.referrer is empty
 }
 
 document.getElementById('home-button').addEventListener('click', () => {

@@ -62,7 +62,7 @@ img {
     max-width: 500px;
 }
 
-#submit-review-form button {
+/* #submit-review-form button {
     background-color: #333;
     color: #fff;
     border: none;
@@ -74,7 +74,7 @@ img {
 
 #submit-review-form button:hover {
     background-color: #555;
-}
+} */
 
 .centered-title {
     text-align: center;

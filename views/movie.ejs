@@ -11,12 +11,12 @@
     <link rel="stylesheet" href="/styles/logoutButton.css">
     <link rel="stylesheet" href="/styles/detailsPage.css">
     <link rel="stylesheet" href="/styles/fileform.css">
-    <link rel="stylesheet" href="/styles/homebutton.css">
+    <link rel="stylesheet" href="/styles/regularbutton.css">
     <script src="/movieScript.js" defer></script>
 </head>
 <body>
     <h1 class="centered-title"> <%= movie.title %></h1>
-    <button class="home-button" id="home-button">
+    <button class="regularbutton" id="home-button">
     ↑ Home Page
     </button>
     <nav>
@@ -79,18 +79,17 @@
         <% }); %>
         <% if (locals.user) { %>
             <h2>Add Review</h2>
-            <form id="submit-review-form" action="/movies/<%= movie._id %>/reviews" method="post">
+            <form class="form" id="submit-review-form" action="/movies/<%= movie._id %>/reviews" method="post">
                 <input type="hidden" id="movie-id" name="movieId" value="<%= movie._id %>">
                 <input type="hidden" id="user-id-hidden" name="userId" value="<%= user._id %>">
 
-                <label for="rating">Rating (1-10):</label>
+                <label class="form-paragraph" for="rating">Rating (1-10):</label>
                 <input type="number" id="rating" name="rating" min="1" max="10" required><br>
 
-                <label for="review-text">Review:</label>
+                <label class="form-paragraph" for="review-text">Review:</label>
                 <textarea id="review-text" name="review" required></textarea><br>
-                <label for="user-id">User:</label>
 
-                <button type="submit">Submit Review</button>
+                <button class="regularbutton" type="submit">Submit Review</button>
             </form>
         <% } else { %>
             <p>You need to be logged in to add a review.</p>
