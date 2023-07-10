@@ -45,6 +45,7 @@ document.getElementById('submit-review-form').addEventListener('submit', async (
     review: formData.get('review'),
     userId: formData.get('userId'),
   };
+  console.log(reviewData);
 
   try {
     await submitReview(reviewData);
@@ -76,3 +77,12 @@ document.querySelectorAll('.delete-review').forEach((button) => {
     }
   });
 });
+
+const logoutButton = document.getElementById('logout-button');
+if (logoutButton) {
+  logoutButton.addEventListener('click', () => {
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('username');
+    localStorage.removeItem('role');
+  });
+}

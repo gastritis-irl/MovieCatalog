@@ -45,8 +45,9 @@ exports.getMovieById = async (req, res, next) => {
       return res.status(404).render('404');
     }
     const reviews = await Review.find({ movieId: req.params.id });
-    const users = await User.find();
-    res.render('movie', { movie, reviews, users });
+    const users = await User.find(); // fetch all users
+    console.log('User:', req.user);
+    res.render('movie', { movie, reviews, users, user: req.user });
   } catch (err) {
     next(err);
   }
@@ -61,12 +62,21 @@ exports.addMovie = async (req, res, next) => {
       return res.status(400).json({ success: false, message: validation.error.details[0].message });
     }
 
-    const newMovie = new Movie(req.body);
+    const movieDetails = req.body;
+    movieDetails.userId = req.user._id; // Add the user ID to the movie details
+    console.log('Movie Details:', movieDetails);
+
+    const newMovie = new Movie(movieDetails);
     if (!req.file) {
       return res.status(400).json({ success: false, message: 'No file provided.' });
     }
     newMovie.coverImage = req.file.path;
     const movie = await newMovie.save();
+    console.log('New Movie:', movie);
+
+    // Add movie to user's movie list
+    await User.findByIdAndUpdate(req.user._id, { $push: { movies: movie._id } });
+
     res.status(201).json({ success: true, data: movie });
   } catch (err) {
     next(err);
@@ -84,10 +94,11 @@ exports.getApiMovieById = async (req, res, next) => {
     }
 
     const reviews = await Review.find({ movieId: id });
-    const users = await User.find();
+    const user = await User.findById(movie.userId); // use findById instead of find
+    console.log('User:', user);
 
     // Structure the response data as needed, this is just a simple example
-    const response = { movie, reviews, users };
+    const response = { movie, reviews, user };
 
     res.status(200).json({ success: true, data: response });
   } catch (err) {

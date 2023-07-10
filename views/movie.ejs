@@ -16,12 +16,32 @@
 <body>
     <h1 class="centered-title"> <%= movie.title %></h1>
 
+    <nav>
+        <% if (user) { %>
+            <span>Welcome, <%= user.username %>!</span> | <a href="/logout">Logout</a>
+        <% } else { %>
+            <a href="/login">Login</a> | <a href="/register">Register</a>
+        <% } %>
+    </nav>
+
     <div class="container">
         <img src="<%= (movie?.coverImage?.replace('public\\uploads\\', '/uploads/')) || '/img/fnf404.jpg' %>" alt="<%= movie?.title || 'Movie not found' %>">
 
         <p>Year: <%= movie.releaseYear %></p>
         <p>Genre: <%= movie.genre %></p>
         <p>Description: <%= movie.description %></p>
+        <!-- <p>User: 
+            <% 
+                // Find the user who wrote this review
+                const user = users.find(user => user._id.toString() === movie.userId.toString());
+                // If the user was found, print their username. Otherwise, print 'Unknown user'
+                if (user) { %> 
+                    <!-- Here we make the username a link to the user's page -->
+                <a href="/users/<%= user._id %>"><%= user.username %></a>
+            <% } else { %> 
+                Unknown user 
+            <% } %>
+        </p> -->
 
         <h2>Reviews</h2>
         <% reviews.forEach(review => { %>
@@ -31,14 +51,16 @@
                     const user = users.find(user => user._id.toString() === review.userId.toString());
                     // If the user was found, print their username. Otherwise, print 'Unknown user'
                     if (user) { %> 
-                        <%= user.username %> 
+                        <!-- Here we make the username a link to the user's page -->
+                        <a href="/users/<%= user._id %>"><%= user.username %></a>
                     <% } else { %> 
                         Unknown user 
                     <% } %>
                 </p>
                 <p>Rating: <%= review.rating %></p>
                 <p>Review: <%= review.review %></p>
-                <button class="delete-review" data-id="<%= review._id %>" <% if (!user || user.role !== 'admin') { %> style="display: none;" <% } %> >
+                <button class="delete-review" data-id="<%= review._id %>" 
+                    <% if (!user || (user._id.toString() !== review.userId.toString() && user.role !== 'admin')) { %> style="display: none;" <% } %> >
                     <span class="button_lg">
                         <span class="button_sl"></span>
                         <span class="button_text">Delete Review</span>
@@ -46,28 +68,25 @@
                 </button>
             </div>
         <% }); %>
+        <% if (user) { %>
+            <h2>Add Review</h2>
+            <form id="submit-review-form" action="/movies/<%= movie._id %>/reviews" method="post">
+                <input type="hidden" id="movie-id" name="movieId" value="<%= movie._id %>">
+                <input type="hidden" id="user-id-hidden" name="userId" value="<%= user._id %>">
 
+                <label for="rating">Rating (1-10):</label>
+                <input type="number" id="rating" name="rating" min="1" max="10" required><br>
 
-        <h2>Add Review</h2>
-        <form id="submit-review-form" action="/movies/<%= movie._id %>/reviews" method="post">
-            <input type="hidden" id="movie-id" name="movieId" value="<%= movie._id %>">
-            <input type="hidden" id="user-id-hidden" name="userId">
+                <label for="review-text">Review:</label>
+                <textarea id="review-text" name="review" required></textarea><br>
+                <label for="user-id">User:</label>
 
-            <label for="rating">Rating (1-10):</label>
-            <input type="number" id="rating" name="rating" min="1" max="10" required><br>
+                <button type="submit">Submit Review</button>
+            </form>
+        <% } else { %>
+            <p>You need to be logged in to add a review.</p>
+        <% } %>
 
-            <label for="review-text">Review:</label>
-            <textarea id="review-text" name="review" required></textarea><br>
-            <label for="user-id">User:</label>
-            
-            <select id="user-id" name="userId" required onchange="updateUserId()">
-                <% users.forEach(user => { %>
-                    <option value="<%= user._id %>"><%= user.username %></option>
-                <% }); %>
-            </select><br>
-
-            <button type="submit">Submit Review</button>
-        </form>
     </div>
 </body>
 </html>

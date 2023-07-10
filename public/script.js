@@ -12,6 +12,7 @@ async function addMovie(formData, fetchFunction = fetch) {
   }
 
   const responseData = await response.json(); // Convert response to JSON here
+  console.log('Response from fetch(/add-movie): ', responseData);
   return responseData; // Return the response data
 }
 
@@ -36,11 +37,13 @@ async function showDetails(event) {
     if (!response.ok) throw new Error('Error fetching movie details');
     const movieDetails = await response.json();
 
-    const { movie } = movieDetails.data; // access the nested movie object here
+    const { movie, user } = movieDetails.data; // access the nested movie object here
     const { genre, description, releaseYear } = movie;
+    const { username, _id } = user;
+    console.log('User who added movie:', username);
 
     const infoDiv = event.target.parentNode.querySelector('.extra-info');
-    infoDiv.innerHTML = `<p class = "detail" >Genre: ${genre}</p><p class = "detail">Description: ${description}</p><p class = "detail">Year: ${releaseYear}</p>`;
+    infoDiv.innerHTML = `<p class="detail">Genre: ${genre}</p><p class="detail">Description: ${description}</p><p class="detail">Year: ${releaseYear}</p><p class="detail">Added by: <a href="/users/${_id}">${username}</a></p>`;
     infoDiv.style.display = 'block';
   } catch (err) {
     console.error(`Error fetching movie details: ${err}`);

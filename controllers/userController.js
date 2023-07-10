@@ -75,14 +75,21 @@ exports.verifyToken = (req, res, next) => {
   }
 };
 
-exports.getMe = async (req, res, next) => {
+exports.getUserById = async (req, res, next) => {
   try {
-    // Verify the token and return the user's details
-    const user = await User.findById(req.user.username).select('-password');
+    const user = await User.findById(req.params.id).populate('movies reviews');
     if (!user) {
-      return res.status(404).json({ success: false, message: 'User not found' });
+      return res.status(404).render('404');
     }
-    res.json(user);
+
+    // Check if a user is logged in
+    if (req.user) {
+      // Render the page with the currentUserId property if a user is logged in
+      res.render('user', { user, currentUserId: req.user._id });
+    } else {
+      // Render the page without the currentUserId property if no user is logged in
+      res.render('user', { user });
+    }
   } catch (err) {
     next(err);
   }

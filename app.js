@@ -9,7 +9,6 @@ const connectDB = require('./db/database.js');
 const Movie = require('./models/Movie.js');
 const { verifyToken } = require('./utils/verifyToken.js');
 const { isAdmin } = require('./utils/isAdmin.js');
-const { validateReviewData } = require('./utils/validate.js');
 const movieController = require('./controllers/movieController.js');
 const userController = require('./controllers/userController.js');
 const reviewController = require('./controllers/reviewController.js');
@@ -57,18 +56,18 @@ app.get('/', verifyToken, async (req, res) => {
 });
 
 // route definitions
-app.post('/register', userController.registerUser);
-app.post('/login', userController.loginUser);
+app.post('/register', verifyToken, userController.registerUser);
+app.post('/login', verifyToken, userController.loginUser);
 app.get('/logout', userController.logout);
-app.get('/movies', movieController.getMovies);
+app.get('/movies', verifyToken, movieController.getMovies);
 app.get('/movies/:id', verifyToken, movieController.getMovieById);
 app.post('/add-movie', verifyToken, upload.single('coverImage'), movieController.addMovie);
 app.get('/api/movies/:id', verifyToken, movieController.getApiMovieById);
-app.post('/movies/:movieId/reviews', verifyToken, validateReviewData, reviewController.addReview);
+app.post('/movies/:movieId/reviews', verifyToken, reviewController.addReview);
 app.get('/reviews', verifyToken, reviewController.getReviews);
 app.delete('/movies/:movieId/reviews/:reviewId', verifyToken, reviewController.deleteReview);
 app.delete('/movies/:movieId', verifyToken, isAdmin, movieController.deleteMovie);
-app.get('/users/me', verifyToken, userController.getMe);
+app.get('/users/:id', verifyToken, userController.getUserById);
 
 app.get('/register', (req, res) => {
   res.render('register');
