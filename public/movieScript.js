@@ -42,9 +42,8 @@ if (submitReviewFormElement) {
 document.querySelectorAll('.delete-review').forEach((button) => {
   button.addEventListener('click', async function deleteReview() {
     const reviewId = this.dataset.id; // dataset accesses all data-* attributes
-    const movieId = document.getElementById('movie-id').value;
     try {
-      const response = await fetch(`/movies/${movieId}/reviews/${reviewId}`, {
+      const response = await fetch(`/reviews/${reviewId}`, {
         method: 'DELETE',
       });
 
@@ -91,50 +90,26 @@ if (logoutButton) {
   });
 }
 
-const deleteMovieButton = document.getElementById('delete-movie-button');
-if (deleteMovieButton) {
-  deleteMovieButton.addEventListener('click', async () => {
-    const movieId = deleteMovieButton.dataset.id;
+document.querySelectorAll('.delete-review').forEach((button) => {
+  button.addEventListener('click', async function deleteReview() {
+    const reviewId = this.dataset.id; // dataset accesses all data-* attributes
     try {
-      const response = await fetch(`/movies/${movieId}`, {
+      const response = await fetch(`/reviews/${reviewId}`, {
         method: 'DELETE',
       });
 
       if (response.ok) {
-        alert('Movie deleted successfully');
-        window.location.href = '/';
-      } else {
-        const errorData = await response.json().catch((err) => console.error(err));
-        throw new Error(errorData?.message || 'Error deleting movie');
-      }
-    } catch (error) {
-      alert(`Error deleting movie: ${error.message || 'An unknown error occurred.'}`);
-    }
-  });
-}
-
-const deleteReviewButton = document.getElementById('delete-review-button');
-if (deleteReviewButton) {
-  deleteReviewButton.addEventListener('click', async () => {
-    const { movieId } = deleteReviewButton.dataset;
-    const { reviewId } = deleteReviewButton.dataset;
-    try {
-      const response = await fetch(`/movies/${movieId}/reviews/${reviewId}`, {
-        method: 'DELETE',
-      });
-
-      if (response.ok) {
+        this.parentElement.remove();
         alert('Review deleted successfully');
-        window.location.reload();
       } else {
         const errorData = await response.json().catch((err) => console.error(err));
         throw new Error(errorData?.message || 'Error deleting review');
       }
     } catch (error) {
-      alert(`Error deleting review: ${error.message || 'An unknown error occurred.'}`);
+      alert('Failed to delete review');
     }
   });
-}
+});
 
 document.getElementById('home-button').addEventListener('click', () => {
   window.location.href = '/';

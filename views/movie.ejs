@@ -39,7 +39,7 @@
         <p>Year: <%= movie.releaseYear %></p>
         <p>Genre: <%= movie.genre %></p>
         <p>Description: <%= movie.description %></p>
-        <!-- <p>User: 
+        <p>User: 
             <% 
                 // Find the user who wrote this review
                 const user = users.find(user => user._id.toString() === movie.userId.toString());
@@ -50,7 +50,14 @@
             <% } else { %> 
                 Unknown user 
             <% } %>
-        </p> -->
+        </p>
+        <button class="delete-review" data-id="<%= movie._id %>"
+            <% if (!locals.user || (user._id.toString() !== locals.user._id.toString() && locals.user.role !== 'admin')) { %> style="display: none;" <% } %>>
+            <span class="button_lg">
+                <span class="button_sl"></span>
+                <span class="button_text">Delete Movie</span>
+            </span>
+        </button>
 
         <h2>Reviews</h2>
         <% reviews.forEach(review => { %>

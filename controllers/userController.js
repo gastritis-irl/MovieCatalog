@@ -82,8 +82,8 @@ exports.getUserById = async (req, res, next) => {
     if (!user) {
       return res.status(404).render('404');
     }
-    const reviews = await Review.find({ userId: req.user._id });
-    const movies = await Movie.find({ userId: req.user._id });
+    const reviews = await Review.find({ userId: user._id });
+    const movies = await Movie.find({ userId: user._id });
     const movieIdToTitle = {};
     const allmovies = await Movie.find();
     allmovies.forEach((movie) => {

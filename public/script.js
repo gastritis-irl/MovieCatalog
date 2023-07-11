@@ -151,14 +151,56 @@ document.getElementById('search-movies-form').addEventListener('submit', async (
 
 const logoutButton = document.getElementById('logout-button');
 if (logoutButton) {
-  logoutButton.addEventListener('click', () => {
-    localStorage.removeItem('auth-token');
-    localStorage.removeItem('username');
-    localStorage.removeItem('role');
-    window.location.reload();
+  logoutButton.addEventListener('click', async () => {
+    try {
+      const response = await fetch('/logout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'same-origin', // required to include cookies with the request
+      });
+
+      if (response.ok) {
+        // Clear local storage
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('username');
+        localStorage.removeItem('role');
+
+        alert('Logged out successfully');
+        window.location.reload();
+      } else {
+        const errorData = await response.json().catch((err) => console.error(err));
+        throw new Error(errorData?.message || 'Error during logout');
+      }
+    } catch (error) {
+      alert(`Error during logout: ${error.message || 'An unknown error occurred.'}`);
+    }
   });
 }
 
 document.getElementById('home-button').addEventListener('click', () => {
   window.location.href = '/';
+});
+
+document.querySelectorAll('.delete-review').forEach((button) => {
+  button.addEventListener('click', async function deleteReview() {
+    const reviewId = this.dataset.id; // dataset accesses all data-* attributes
+    const movieId = document.getElementById('movie-id').value;
+    try {
+      const response = await fetch(`/movies/${movieId}/reviews/${reviewId}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        this.parentElement.remove();
+        alert('Review deleted successfully');
+      } else {
+        const errorData = await response.json().catch((err) => console.error(err));
+        throw new Error(errorData?.message || 'Error deleting review');
+      }
+    } catch (error) {
+      alert('Failed to delete review');
+    }
+  });
 });

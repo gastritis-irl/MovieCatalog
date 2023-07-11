@@ -31,11 +31,8 @@ exports.addReview = async (req, res) => {
 
 exports.deleteReview = async (req, res) => {
   try {
-    const { movieId, reviewId } = req.params;
-    console.log('Deleting review with id:', reviewId, 'for movie:', movieId);
-
     // First, check if the review with the provided ID exists
-    const review = await Review.findOne({ _id: reviewId, movieId });
+    const review = await Review.findOne({ _id: req.params.id });
 
     console.log('Review found:', review);
 
@@ -44,12 +41,13 @@ exports.deleteReview = async (req, res) => {
     }
 
     // Then check if the user is authorized to delete the review
-    if (req.user._id !== review.userId || req.user.role !== 'admin') {
+    // console.log('Review user ID:', review.userId);
+    if (req.user._id !== review.userId && req.user.role !== 'admin') {
       return res.status(403).json({ success: false, message: 'You are not authorized to delete this review' });
     }
 
     // Then delete it
-    await Review.deleteOne({ _id: reviewId });
+    await Review.deleteOne({ _id: req.params.id });
 
     return res.json({ success: true, message: 'Review deleted successfully' });
   } catch (error) {

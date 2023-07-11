@@ -30,7 +30,7 @@
         <% } %>
     </nav>
         <button class="delete-review" data-id="<%= user._id %>" 
-            <% if (currentUser.role !== 'admin') { %> style="display: none;" <% } %>>
+            <% if (!currentUser || currentUser.role !== 'admin') { %> style="display: none;" <% } %>>
                 <span class="button_lg">
                     <span class="button_sl"></span>
                     <span class="button_text">Delete User</span>

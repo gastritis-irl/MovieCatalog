@@ -69,6 +69,8 @@ app.delete('/movies/:movieId/reviews/:reviewId', verifyToken, reviewController.d
 app.delete('/movies/:movieId', verifyToken, isAdmin, movieController.deleteMovie);
 app.get('/users/:id', verifyToken, userController.getUserById);
 app.get('/users', verifyToken, isAdmin, userController.getUsers);
+// app.delete('/users/:id', verifyToken, isAdmin, userController.deleteUser);
+app.delete('/reviews/:id', verifyToken, isAdmin, reviewController.deleteReview);
 
 app.get('/register', (req, res) => {
   res.render('register');
