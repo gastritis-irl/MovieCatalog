@@ -152,10 +152,10 @@ document.getElementById('search-movies-form').addEventListener('submit', async (
 const logoutButton = document.getElementById('logout-button');
 if (logoutButton) {
   logoutButton.addEventListener('click', () => {
-    localStorage.removeItem('authToken');
+    localStorage.removeItem('auth-token');
     localStorage.removeItem('username');
     localStorage.removeItem('role');
-    window.location.reload(); // fallback to '/' if document.referrer is empty
+    window.location.reload();
   });
 }
 

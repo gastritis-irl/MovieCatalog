@@ -5,20 +5,21 @@
 <head>
     <title>User Profile</title>
     <script src="/userScript.js" defer></script>
-    <link rel="stylesheet" type="text/css" href="/styles/button2.css">
+    <link rel="stylesheet" type="text/css" href="/styles/button.css">
+    <link rel="stylesheet" type="text/css" href="/styles/regularbutton.css">
     <link rel="stylesheet" type="text/css" href="/styles/styles.css">
-    <link rel="stylesheet" type="text/css" href="/styles/user.css">
     <link rel="stylesheet" href="/styles/logoutButton.css">
+    <link rel="stylesheet" href="/styles/movie.css">
 
 </head>
 <body>
     <h1>User: <%= user.username %></h1>
-    <button class="button2" id="home-button">
+    <button class="regularbutton" id="home-button">
     ↑ Home Page
     </button>
     <nav>
-        <% if (locals.user) { %>
-            <span class="welcome-text">Welcome, <%= locals.user.username %>!</span> | 
+        <% if (currentUser) { %>
+            <span class="welcome-text">Welcome, <%= currentUser.username %>!</span> | 
             <button class="Btn" id="logout-button">
                 <div class="sign"><svg viewBox="0 0 512 512"><path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z"></path></svg></div>
                 
@@ -28,37 +29,52 @@
             <a href="/login">Login</a> | <a href="/register">Register</a>
         <% } %>
     </nav>
+        <button class="delete-review" data-id="<%= user._id %>" 
+            <% if (currentUser.role !== 'admin') { %> style="display: none;" <% } %>>
+                <span class="button_lg">
+                    <span class="button_sl"></span>
+                    <span class="button_text">Delete User</span>
+                </span>
+        </button>
     <h2>Movies</h2>
     <ul>
-        <% user.movies.forEach(function(movie){ %>
+        <% movies.forEach(movie => { %>
             <li>
-                <a href="/movies/<%= movie._id %>"><%= movie.title %></a>
-                <% if (typeof locals.user !== 'undefined' && user._id.toString() === locals.user._id.toString()) { %>
-                    <button onclick="deleteMovie('<%= movie._id %>')">Delete</button>
-                <% } %>
+                <div class="review">
+                    <a href="/movies/<%= movie._id %>"><%=movie.title %></a>
+                    <p>Genre: <%= movie.genre %></p>
+                    <p>Release Year: <% movie.releaseYear %></p>
+                    <p>Description: <% movie.description %></p>
+                    <button class="delete-review" data-id="<%= movie._id %>"
+                        <% if (!currentUser || (user._id.toString() !== currentUser._id.toString() && currentUser.role !== 'admin')) { %> style="display: none;" <% } %>>
+                        <span class="button_lg">
+                            <span class="button_sl"></span>
+                            <span class="button_text">Delete Movie</span>
+                        </span>
+                    </button>
+                </div>
             </li>
-        <% }); %>
+        <% }) %>
     </ul>
 
     <h2>Reviews</h2>
     <ul>
-        <% user.reviews.forEach(function(review){ %>
-        <li>
-        <%= review.content %> (for <a href="/movies/<%= review.movieId %>"><%= review.movieTitle %></a>)
-        </li>
-        <% }); %>
-    </ul>
-
-    <% if (typeof locals.user !== 'undefined' && user._id.toString() === locals.user._id.toString()) { %>
-    <a href="/add-movie">Add a movie</a>
-    <h2>Add Movie</h2>
-        <form id="add-movie-form" action="/api/movies" method="post">
-            <label for="movie-title">Title:</label>
-            <input type="text" id="movie-title" name="title" required><br>
-            <label for="movie-genre">Genre:</label>
-            <input type="text" id="movie-genre" name="genre" required><br>
-            <button class="button2" type="submit">Add Movie</button>
-        </form>
-    <% } %>
+        <% reviews.forEach(review => { %>
+            <li>
+                <div class="review">
+                    <p>Movie: <%= movieIdToTitle[review.movieId] %></p>
+                    <p>Rating: <%= review.rating %></p>
+                    <p>Review: <%= review.review %></p>
+                    <button class="delete-review" data-id="<%= review._id %>" 
+                        <% if (!currentUser || (currentUser._id.toString() !== review.userId.toString() && currentUser.role !== 'admin')) { %> style="display: none;" <% } %>>
+                        <span class="button_lg">
+                            <span class="button_sl"></span>
+                            <span class="button_text">Delete Review</span>
+                        </span>
+                    </button>
+                </div>
+            </li>
+        <% }) %>
+    </ul>   
 </body>
 </html>

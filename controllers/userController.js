@@ -2,16 +2,18 @@
 
 const jwt = require('jsonwebtoken');
 const User = require('../models/User.js');
+const Review = require('../models/Review.js');
+const Movie = require('../models/Movie.js');
 const config = require('../config.js');
 
 exports.registerUser = async (req, res, next) => {
   try {
     const user = new User(req.body);
     await user.save();
-    const token = jwt.sign({ _id: user._id, role: user.role, username: user.username }, config.JWT_SECRET_KEY, {
-      expiresIn: '1h',
-    });
-    res.cookie('token', token, { httpOnly: true });
+    // const token = jwt.sign({ _id: user._id, role: user.role, username: user.username }, config.JWT_SECRET_KEY, {
+    //   expiresIn: '1h',
+    // });
+    // res.cookie('token', token, { httpOnly: true });
     res.status(200).json({ message: 'User registered successfully!' });
   } catch (err) {
     next(err); // delegate error handling to middleware
@@ -80,14 +82,23 @@ exports.getUserById = async (req, res, next) => {
     if (!user) {
       return res.status(404).render('404');
     }
+    const reviews = await Review.find({ userId: req.user._id });
+    const movies = await Movie.find({ userId: req.user._id });
+    const movieIdToTitle = {};
+    const allmovies = await Movie.find();
+    allmovies.forEach((movie) => {
+      movieIdToTitle[movie._id] = movie.title;
+    });
 
     // Check if a user is logged in
     if (req.user) {
       // Render the page with the currentUserId property if a user is logged in
-      res.render('user', { user, currentUser: req.user });
+      console.log('User logged in', req.user.username);
+      res.render('user', { user, currentUser: req.user, reviews, movies, movieIdToTitle });
     } else {
       // Render the page without the currentUserId property if no user is logged in
-      res.render('user', { user });
+      console.log('No user logged in');
+      res.render('user', { user, currentUser: null, reviews, movies, movieIdToTitle });
     }
   } catch (err) {
     next(err);

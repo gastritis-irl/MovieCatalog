@@ -8,17 +8,20 @@ exports.addReview = async (req, res) => {
   try {
     const { movieId } = req.params;
     const { rating, review } = req.body;
+    console.log('User:', req.user);
 
     const newReview = new Review({
       movieId,
-      userId: req.body.userId,
+      userId: req.user._id,
       rating,
       review,
     });
-    console.log('New review:', newReview);
+    // console.log('New review:', newReview);
 
-    await newReview.save();
-    await User.findByIdAndUpdate(req.user._id, { $push: { reviews: review._id } });
+    const reviewcheck = await newReview.save();
+    console.log('Review check: ', reviewcheck);
+    const reviewAdded = await User.findByIdAndUpdate(req.user._id, { $push: { reviews: review._id } });
+    console.log('Review added to user: ', reviewAdded);
 
     res.status(201).json({ success: true, data: newReview });
   } catch (error) {

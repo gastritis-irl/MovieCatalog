@@ -18,11 +18,13 @@ window.deleteMovie = deleteMovie;
 const logoutButton = document.getElementById('logout-button');
 if (logoutButton) {
   logoutButton.addEventListener('click', () => {
-    localStorage.removeItem('authToken');
+    localStorage.removeItem('auth-token');
+    localStorage.removeItem('currentUser');
     localStorage.removeItem('username');
     localStorage.removeItem('role');
+    window.location.reload();
+    console.log('Logged out successfully');
   });
-  window.location.href = document.referrer || '/'; // fallback to '/' if document.referrer is empty
 }
 
 document.getElementById('home-button').addEventListener('click', () => {
