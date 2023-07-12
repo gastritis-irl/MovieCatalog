@@ -1,8 +1,6 @@
 // Path: controllers\reviewController.js
 
 const Review = require('../models/Review.js');
-const User = require('../models/User.js');
-// const { validateReviewData } = require('../utils/validate.js');
 
 exports.addReview = async (req, res) => {
   try {
@@ -20,8 +18,6 @@ exports.addReview = async (req, res) => {
 
     const reviewcheck = await newReview.save();
     console.log('Review check: ', reviewcheck);
-    const reviewAdded = await User.findByIdAndUpdate(req.user._id, { $push: { reviews: review._id } });
-    console.log('Review added to user: ', reviewAdded);
 
     res.status(201).json({ success: true, data: newReview });
   } catch (error) {

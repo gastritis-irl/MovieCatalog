@@ -9,6 +9,7 @@ const connectDB = require('./db/database.js');
 const Movie = require('./models/Movie.js');
 const { verifyToken } = require('./utils/verifyToken.js');
 const { isAdmin } = require('./utils/isAdmin.js');
+const { isUser } = require('./utils/isUser.js');
 const movieController = require('./controllers/movieController.js');
 const userController = require('./controllers/userController.js');
 const reviewController = require('./controllers/reviewController.js');
@@ -61,16 +62,16 @@ app.post('/login', userController.loginUser);
 app.post('/logout', verifyToken, userController.logout);
 app.get('/movies', verifyToken, movieController.getMovies);
 app.get('/movies/:id', verifyToken, movieController.getMovieById);
-app.post('/add-movie', verifyToken, upload.single('coverImage'), movieController.addMovie);
+app.post('/add-movie', verifyToken, upload.single('coverImage'), isUser, movieController.addMovie);
 app.get('/api/movies/:id', verifyToken, movieController.getApiMovieById);
-app.post('/movies/:movieId/reviews', verifyToken, reviewController.addReview);
-app.get('/reviews', verifyToken, reviewController.getReviews);
-app.delete('/movies/:movieId/reviews/:reviewId', verifyToken, reviewController.deleteReview); // Made the auth check inside the function
+app.post('/movies/:movieId/reviews', verifyToken, isUser, reviewController.addReview);
+app.get('/reviews', verifyToken, isAdmin, reviewController.getReviews);
+app.delete('/movies/:movieId/reviews/:reviewId', verifyToken, isUser, reviewController.deleteReview); // Made the auth check inside the function
 app.delete('/movies/:movieId', verifyToken, isAdmin, movieController.deleteMovie);
 app.get('/users/:id', verifyToken, userController.getUserById);
 app.get('/users', verifyToken, isAdmin, userController.getUsers);
-// app.delete('/users/:id', verifyToken, isAdmin, userController.deleteUser);
-app.delete('/reviews/:id', verifyToken, isAdmin, reviewController.deleteReview);
+app.delete('/users/:id', verifyToken, isAdmin, userController.deleteUser);
+app.delete('/reviews/:id', verifyToken, isUser, reviewController.deleteReview);
 
 app.get('/register', (req, res) => {
   res.render('register');
