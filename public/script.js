@@ -183,24 +183,96 @@ document.getElementById('home-button').addEventListener('click', () => {
   window.location.href = '/';
 });
 
-document.querySelectorAll('.delete-review').forEach((button) => {
-  button.addEventListener('click', async function deleteReview() {
-    const reviewId = this.dataset.id; // dataset accesses all data-* attributes
-    const movieId = document.getElementById('movie-id').value;
+document.querySelectorAll('.delete-movie').forEach((button) => {
+  button.addEventListener('click', async function deleteMovie() {
+    const movieId = this.dataset.id;
+
     try {
-      const response = await fetch(`/movies/${movieId}/reviews/${reviewId}`, {
+      const response = await fetch(`/movies/${movieId}`, {
         method: 'DELETE',
       });
-
+      console.log(response);
       if (response.ok) {
         this.parentElement.remove();
-        alert('Review deleted successfully');
+        alert('Movie deleted successfully');
       } else {
         const errorData = await response.json().catch((err) => console.error(err));
-        throw new Error(errorData?.message || 'Error deleting review');
+        throw new Error(errorData?.message || 'Error deleting movie');
       }
     } catch (error) {
-      alert('Failed to delete review');
+      console.log(error);
+      alert('Failed to delete movie');
     }
   });
 });
+
+async function getUsers(formData, fetchFunction = fetch) {
+  const queryParams = new URLSearchParams(formData).toString();
+  console.log('Query Params:', queryParams);
+
+  const response = await fetchFunction(`/users?${queryParams}`, {
+    method: 'GET',
+  });
+
+  if (!response.ok) {
+    throw new Error('Error searching users');
+  }
+
+  return response.json();
+}
+
+function createUserDiv(user) {
+  const userDiv = document.createElement('div');
+  userDiv.className = 'movie'; // Use 'movie' class to match with movie div
+  userDiv.id = user._id;
+
+  const username = document.createElement('h3'); // Use 'h3' to match with movie title
+  username.textContent = `Username: ${user.username}`;
+  userDiv.appendChild(username);
+
+  const role = document.createElement('p');
+  role.textContent = `Role: ${user.role}`;
+  userDiv.appendChild(role);
+
+  // Assuming we want to display user role similar to how movie's release year is displayed
+  const roleInfo = document.createElement('p');
+  roleInfo.textContent = `Role: ${user.role}`;
+  userDiv.appendChild(roleInfo);
+
+  // const buttonContainer = document.createElement('div');
+  // buttonContainer.className = 'button-container';
+
+  // const deleteButton = document.createElement('button');
+  // deleteButton.className = 'delete-user';
+  // deleteButton.textContent = 'Delete User';
+  // deleteButton.dataset.id = user._id;
+  // deleteButton.addEventListener('click', deleteUser);
+  // buttonContainer.appendChild(deleteButton);
+
+  // userDiv.appendChild(buttonContainer);
+
+  return userDiv;
+}
+
+const searchUsersForm = document.getElementById('search-users-form');
+if (searchUsersForm) {
+  searchUsersForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    console.log('Form Data:', [...formData]);
+
+    try {
+      const userdata = await getUsers(formData);
+
+      // Display the returned users
+      const usersList = document.getElementById('users-list');
+      usersList.innerHTML = '';
+      userdata.data.forEach((user) => {
+        const userDiv = createUserDiv(user);
+        usersList.appendChild(userDiv);
+      });
+    } catch (error) {
+      alert(error.message);
+    }
+  });
+}

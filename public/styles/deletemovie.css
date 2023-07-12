@@ -1,0 +1,120 @@
+/*Path: /public/button.css*/
+
+button.delete-movie {
+  -moz-appearance: none !important;
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  border: none !important;
+  background: none !important;
+  color: #0f1923 !important;
+  cursor: pointer !important;
+  position: relative !important;
+  padding: 8px !important;
+  margin-bottom: 20px !important;
+  text-transform: uppercase !important;
+  font-weight: bold !important;
+  font-size: 14px;
+  transition: all .15s ease !important;
+}
+
+button.delete-movie::before,
+button.delete-movie::after {
+  content: '' !important;
+  display: block !important;
+  position: absolute !important;
+  right: 0 !important;
+  left: 0 !important;
+  height: calc(50% - 5px) !important;
+  border: 1px solid #7D8082 !important;
+  transition: all .15s ease !important;
+}
+
+button.delete-movie::before {
+  top: 0 !important;
+  border-bottom-width: 0 !important;
+}
+
+button.delete-movie::after {
+  bottom: 0 !important;
+  border-top-width: 0 !important;
+}
+
+button.delete-movie:active,
+button.delete-movie:focus {
+  outline: none !important;
+}
+
+button.delete-movie:active::before,
+button.delete-movie:active::after {
+  right: 3px !important;
+  left: 3px !important;
+}
+
+button.delete-movie:active::before {
+  top: 3px !important;
+}
+
+button.delete-movie:active::after {
+  bottom: 3px !important;
+}
+
+.button_lg {
+  position: relative !important;
+  display: block !important;
+  padding: 10px 20px !important;
+  color: #fff !important;
+  background-color: #0f1923 !important;
+  overflow: hidden !important;
+  box-shadow: inset 0px 0px 0px 1px transparent   !important;
+}
+
+.button_lg::before {
+  content: '' !important;
+  display: block !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 2px !important;
+  height: 2px !important;
+  background-color: #0f1923 !important;
+}
+
+.button_lg::after {
+  content: '' !important;
+  display: block !important;
+  position: absolute !important;
+  right: 0 !important;
+  bottom: 0   !important;
+  width: 4px !important;
+  height: 4px !important;
+  background-color: #0f1923 !important;
+  transition: all .2s ease !important;
+}
+
+.button_sl {
+  display: block !important;
+  position: absolute !important;
+  top: 0 !important;
+  bottom: -1px !important;
+  left: -8px !important;
+  width: 0 !important;
+  background-color: #ff4655 !important;
+  transform: skew(-15deg) !important;
+  transition: all .2s ease !important;
+}
+
+.button_text {
+  position: relative !important;
+}
+
+.delete-movie:hover {
+  color: #0f1923 !important;
+}
+
+.delete-movie:hover .button_sl {
+  width: calc(100% + 15px) !important;
+}
+
+.delete-movie:hover .button_lg::after {
+  background-color: #fff !important;
+}

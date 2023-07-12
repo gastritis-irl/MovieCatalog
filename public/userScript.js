@@ -1,19 +1,27 @@
 // Path: \public\userScript.js
 
-async function deleteMovie(movieId) {
-  try {
-    const response = await fetch(`/api/movies/${movieId}`, {
-      method: 'DELETE',
-    });
-    if (!response.ok) throw new Error('Error deleting movie');
-    // Refresh the page to show that the movie has been deleted
-    window.location.reload();
-  } catch (err) {
-    console.error(`Error deleting movie: ${err}`);
-  }
-}
+document.querySelectorAll('.delete-movie').forEach((button) => {
+  button.addEventListener('click', async function deleteMovie() {
+    const movieId = this.dataset.id;
 
-window.deleteMovie = deleteMovie;
+    try {
+      const response = await fetch(`/movies/${movieId}`, {
+        method: 'DELETE',
+      });
+      console.log(response);
+      if (response.ok) {
+        this.parentElement.remove();
+        alert('Movie deleted successfully');
+      } else {
+        const errorData = await response.json().catch((err) => console.error(err));
+        throw new Error(errorData?.message || 'Error deleting movie');
+      }
+    } catch (error) {
+      console.log(error);
+      alert('Failed to delete movie');
+    }
+  });
+});
 
 document.querySelectorAll('.delete-review').forEach((button) => {
   button.addEventListener('click', async function deleteReview() {
@@ -31,33 +39,34 @@ document.querySelectorAll('.delete-review').forEach((button) => {
         throw new Error(errorData?.message || 'Error deleting review');
       }
     } catch (error) {
+      console.error(error);
       alert('Failed to delete review');
     }
   });
 });
 
-const deleteReviewButton = document.getElementById('delete-review-button');
-if (deleteReviewButton) {
-  deleteReviewButton.addEventListener('click', async () => {
-    const { movieId } = deleteReviewButton.dataset;
-    const { reviewId } = deleteReviewButton.dataset;
+document.querySelectorAll('.delete-user').forEach((button) => {
+  button.addEventListener('click', async function deleteUser() {
+    const userId = this.dataset.id;
+
     try {
-      const response = await fetch(`/movies/${movieId}/reviews/${reviewId}`, {
+      const response = await fetch(`/users/${userId}`, {
         method: 'DELETE',
       });
-
+      console.log(response);
       if (response.ok) {
-        alert('Review deleted successfully');
-        window.location.reload();
+        window.location.href = document.referrer || '/';
+        alert('User deleted successfully');
       } else {
         const errorData = await response.json().catch((err) => console.error(err));
-        throw new Error(errorData?.message || 'Error deleting review');
+        throw new Error(errorData?.message || 'Error deleting User');
       }
     } catch (error) {
-      alert(`Error deleting review: ${error.message || 'An unknown error occurred.'}`);
+      console.log(error);
+      alert('Failed to delete user');
     }
   });
-}
+});
 
 const logoutButton = document.getElementById('logout-button');
 if (logoutButton) {

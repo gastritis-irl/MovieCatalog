@@ -110,11 +110,13 @@ exports.getApiMovieById = async (req, res, next) => {
 exports.deleteMovie = async (req, res, next) => {
   try {
     const movie = await Movie.findById(req.params.id);
+    console.log('MovieId:', req.params.id);
+    console.log('Movie:', movie);
     if (!movie) {
       return res.status(404).json({ success: false, message: 'Movie not found' });
     }
 
-    await Movie.deleteOne({ _id: req.params.id });
+    await Movie.deleteOne({ _id: movie._id });
     res.status(200).json({ success: true, message: 'Movie deleted successfully' });
   } catch (err) {
     next(err);

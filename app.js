@@ -60,16 +60,16 @@ app.get('/', verifyToken, async (req, res) => {
 app.post('/register', userController.registerUser);
 app.post('/login', userController.loginUser);
 app.post('/logout', verifyToken, userController.logout);
-app.get('/movies', verifyToken, movieController.getMovies);
-app.get('/movies/:id', verifyToken, movieController.getMovieById);
 app.post('/add-movie', verifyToken, upload.single('coverImage'), isUser, movieController.addMovie);
-app.get('/api/movies/:id', verifyToken, movieController.getApiMovieById);
 app.post('/movies/:movieId/reviews', verifyToken, isUser, reviewController.addReview);
 app.get('/reviews', verifyToken, isAdmin, reviewController.getReviews);
-app.delete('/movies/:movieId/reviews/:reviewId', verifyToken, isUser, reviewController.deleteReview); // Made the auth check inside the function
-app.delete('/movies/:movieId', verifyToken, isAdmin, movieController.deleteMovie);
-app.get('/users/:id', verifyToken, userController.getUserById);
 app.get('/users', verifyToken, isAdmin, userController.getUsers);
+app.get('/movies', verifyToken, movieController.getMovies);
+app.get('/movies/:id', verifyToken, movieController.getMovieById);
+app.get('/api/movies/:id', verifyToken, movieController.getApiMovieById);
+app.get('/users/:id', verifyToken, userController.getUserById);
+app.delete('/movies/:movieId/reviews/:reviewId', verifyToken, isUser, reviewController.deleteReview);
+app.delete('/movies/:id', verifyToken, isAdmin, movieController.deleteMovie);
 app.delete('/users/:id', verifyToken, isAdmin, userController.deleteUser);
 app.delete('/reviews/:id', verifyToken, isUser, reviewController.deleteReview);
 

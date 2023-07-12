@@ -10,6 +10,8 @@
     <link rel="stylesheet" type="text/css" href="/styles/styles.css">
     <link rel="stylesheet" href="/styles/logoutButton.css">
     <link rel="stylesheet" href="/styles/movie.css">
+    <link rel="stylesheet" href="/styles/deletemovie.css">
+    <link rel="stylesheet" href="/styles/deleteuser.css">
 
 </head>
 <body>
@@ -29,7 +31,7 @@
             <a href="/login">Login</a> | <a href="/register">Register</a>
         <% } %>
     </nav>
-        <button class="delete-review" data-id="<%= user._id %>" 
+        <button class="delete-user" data-id="<%= user._id %>" 
             <% if (!currentUser || currentUser.role !== 'admin') { %> style="display: none;" <% } %>>
                 <span class="button_lg">
                     <span class="button_sl"></span>
@@ -45,7 +47,7 @@
                     <p>Genre: <%= movie.genre %></p>
                     <p>Release Year: <% movie.releaseYear %></p>
                     <p>Description: <% movie.description %></p>
-                    <button class="delete-review" data-id="<%= movie._id %>"
+                    <button class="delete-movie" data-id="<%= movie._id %>"
                         <% if (!currentUser || (user._id.toString() !== currentUser._id.toString() && currentUser.role !== 'admin')) { %> style="display: none;" <% } %>>
                         <span class="button_lg">
                             <span class="button_sl"></span>

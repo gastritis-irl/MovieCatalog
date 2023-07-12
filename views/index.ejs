@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="styles/logoutButton.css">
     <link rel="stylesheet" href="styles/detailsPage.css">
     <link rel="stylesheet" href="styles/fileform.css">
+    <link rel="stylesheet" href="styles/deletemovie.css">
     <script src="script.js" defer></script>
 </head>
 <body>
@@ -33,6 +34,26 @@
             <a href="/login">Login</a> | <a href="/register">Register</a>
         <% } %>
     </nav>
+
+    <% if (user && user.role === 'admin') { %>
+        <h2>Search Users</h2>
+        <form class="form" id="search-users-form" action="/users" method="get">
+            <label for="search-username">Username:</label>
+            <input type="text" id="search-username" name="username"><br>
+
+            <label for="search-role">Role:</label>
+            <select id="search-role" name="role">
+                <option value="">Any</option>
+                <option value="admin">Admin</option>
+                <option value="user">User</option>
+            </select><br>
+
+            <button class="onbackground" type="submit">Search Users</button>
+        </form>
+        <div id="users-list"></div>
+
+    <% } %>
+
 
     <% if (user) { %>
         <h2>Add Movie</h2>
@@ -99,7 +120,7 @@
                         <div class="extra-info" style="display: none;"></div>
                         <a href="/movies/<%= movie._id %>"><%=movie.title %>'s Page</a>
                     </div>
-                    <button class="delete-review" data-id="<%= movie._id %>" 
+                    <button class="delete-movie" data-id="<%= movie._id %>" 
                         <% if (!locals.user || (locals.user._id.toString() !== movie.userId.toString() && locals.user.role !== 'admin')) { %> style="display: none;" <% } %> >
                         <span class="button_lg">
                             <span class="button_sl"></span>

@@ -60,6 +60,29 @@ document.querySelectorAll('.delete-review').forEach((button) => {
   });
 });
 
+document.querySelectorAll('.delete-movie').forEach((button) => {
+  button.addEventListener('click', async function deleteMovie() {
+    const movieId = this.dataset.id;
+
+    try {
+      const response = await fetch(`/movies/${movieId}`, {
+        method: 'DELETE',
+      });
+      console.log(response);
+      if (response.ok) {
+        window.location.href = document.referrer || '/';
+        alert('Movie deleted successfully');
+      } else {
+        const errorData = await response.json().catch((err) => console.error(err));
+        throw new Error(errorData?.message || 'Error deleting movie');
+      }
+    } catch (error) {
+      console.log(error);
+      alert('Failed to delete movie');
+    }
+  });
+});
+
 const logoutButton = document.getElementById('logout-button');
 if (logoutButton) {
   logoutButton.addEventListener('click', async () => {
@@ -89,27 +112,6 @@ if (logoutButton) {
     }
   });
 }
-
-document.querySelectorAll('.delete-review').forEach((button) => {
-  button.addEventListener('click', async function deleteReview() {
-    const reviewId = this.dataset.id; // dataset accesses all data-* attributes
-    try {
-      const response = await fetch(`/reviews/${reviewId}`, {
-        method: 'DELETE',
-      });
-
-      if (response.ok) {
-        this.parentElement.remove();
-        alert('Review deleted successfully');
-      } else {
-        const errorData = await response.json().catch((err) => console.error(err));
-        throw new Error(errorData?.message || 'Error deleting review');
-      }
-    } catch (error) {
-      alert('Failed to delete review');
-    }
-  });
-});
 
 document.getElementById('home-button').addEventListener('click', () => {
   window.location.href = '/';

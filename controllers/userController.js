@@ -108,9 +108,27 @@ exports.getUserById = async (req, res, next) => {
 
 exports.getUsers = async (req, res, next) => {
   try {
-    const users = await User.find();
+    const { username, role } = req.query;
+
+    const query = await User.find();
+
+    if (username) query.where('username').equals(username);
+    if (role) query.where('role').equals(role);
+
+    const users = await query.exec();
     // console.log('Found Users:', users);
     res.json({ success: true, data: users });
+  } catch (error) {
+    next(error);
+    // res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+exports.deleteUser = async (req, res, next) => {
+  try {
+    const user = await User.findByIdAndDelete(req.params.id);
+    console.log('Deleted User:', user);
+    res.json({ success: true, data: user });
   } catch (error) {
     next(error);
     // res.status(500).json({ success: false, message: error.message });

@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="/styles/detailsPage.css">
     <link rel="stylesheet" href="/styles/fileform.css">
     <link rel="stylesheet" href="/styles/regularbutton.css">
+    <link rel="stylesheet" href="/styles/deletemovie.css">
     <script src="/movieScript.js" defer></script>
 </head>
 <body>
@@ -51,7 +52,7 @@
                 Unknown user 
             <% } %>
         </p>
-        <button class="delete-review" data-id="<%= movie._id %>"
+        <button class="delete-movie" data-id="<%= movie._id %>"
             <% if (!locals.user || (user._id.toString() !== locals.user._id.toString() && locals.user.role !== 'admin')) { %> style="display: none;" <% } %>>
             <span class="button_lg">
                 <span class="button_sl"></span>
