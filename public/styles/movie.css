@@ -81,12 +81,21 @@ img {
 }
 
 .welcome-text {
-  color: #f79400;
-  font-size: 1.8rem;
-  font-weight: 500;
-  margin-right: 10px;
-  transition: color 0.2s ease-in-out;
+  background-color: transparent;
+  box-shadow: 0 10px 60px rgb(218, 229, 255);
+  border: 1px solid rgb(159, 159, 160);
+  border-radius: 20px;
+  padding: 2rem 0.7rem 0.7rem 0.7rem;
+  text-align: center;
+  font-size: 1.125rem;
+  max-width: 320px;
+  color: #32ebcc;
+  margin-left: 20px;
+  margin-bottom: 20px;
+  margin-top: 20px;
+  margin-right: 20px;
 }
+
 
 .welcome-text:hover {
   color: rgba(255, 0, 0, 0.596)000;

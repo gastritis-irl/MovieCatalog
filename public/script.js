@@ -151,6 +151,11 @@ function createUserDiv(user) {
   username.textContent = `Username: ${user.username}`;
   userDiv.appendChild(username);
 
+  const link = document.createElement('a');
+  link.href = `/users/${user._id}`;
+  link.textContent = 'View User';
+  userDiv.appendChild(link);
+
   const role = document.createElement('p');
   role.textContent = `Role: ${user.role}`;
   userDiv.appendChild(role);
