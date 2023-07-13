@@ -6,19 +6,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Online Film Collection</title>
-    <link rel="stylesheet" href="styles/button2.css">
     <link rel="stylesheet" href="styles/button.css">
+    <link rel="stylesheet" href="styles/button2.css">
     <link rel="stylesheet" href="styles/styles.css">
     <link rel="stylesheet" href="styles/logoutButton.css">
     <link rel="stylesheet" href="styles/detailsPage.css">
     <link rel="stylesheet" href="styles/fileform.css">
     <link rel="stylesheet" href="styles/deletemovie.css">
+    <link rel="stylesheet" href="styles/deleteuser.css">
+    <link rel="stylesheet" href="styles/regularbutton.css">
     <script src="script.js" defer></script>
 </head>
 <body>
     <h1>Online Film Collection</h1>
     
-    <button class="home-button" id="home-button">
+    <button class="regularbutton" id="home-button">
     ↑ Home Page
     </button>
 
@@ -48,13 +50,27 @@
                 <option value="user">User</option>
             </select><br>
 
-            <button class="onbackground" type="submit">Search Users</button>
+            <button class="regularbutton" type="submit">Search Users</button>
         </form>
-        <div id="users-list"></div>
-
+        <div id="users-list">
+        <% if (users && users.length > 0 && user.role === 'admin') { %>
+            <% users.forEach(function(user) { %>
+                <div class="movie" id="<%= user._id %>">
+                    <h3><%= user.username %></h3>
+                    <p>Role: <%= user.role %></p>
+                    <button class="delete-user" data-id="<%= user._id %>" 
+                        <span class="button_lg">
+                            <span class="button_sl"></span>
+                            <span class="button_text">Delete Movie</span>
+                        </span>
+                    </button>
+                </div>
+            <% }) %>
+        <% } else { %>
+            <p>No users found.</p>
+        <% } %>
+        </div>
     <% } %>
-
-
     <% if (user) { %>
         <h2>Add Movie</h2>
         <form class="form" id="add-movie-form" action="/add-movie" method="post" enctype="multipart/form-data">
@@ -83,7 +99,7 @@
             <input type="file" accept="image/*" required="" id="cover-image" name="coverImage" required ><br>
             </label>
 
-            <button class="onbackground" type="submit">Add Movie</button>
+            <button class="regularbutton" type="submit">Add Movie</button>
         </form>
     <% } %>
 
@@ -101,7 +117,7 @@
         <label for="max-year">Maximum Year:</label>
         <input type="number" id="max-year" name="maxYear"><br>
 
-        <button class="onbackground" class="button" type="submit">Search Movies</button>
+        <button class="regularbutton" class="button" type="submit">Search Movies</button>
     </form>
 
     <div id="search-results">
@@ -116,7 +132,7 @@
                     <p>Description: <%= movie.description %></p>
                     -->
                     <div class="button-container">
-                        <button class="details">Show Details</button>
+                        <button class="details" >Show Details</button>
                         <div class="extra-info" style="display: none;"></div>
                         <a href="/movies/<%= movie._id %>"><%=movie.title %>'s Page</a>
                     </div>

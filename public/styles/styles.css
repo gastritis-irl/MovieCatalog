@@ -99,6 +99,24 @@ form textarea {
     max-width: 320px;
 }
 
+#users-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-gap: 1rem;
+}
+
+#users-list div {
+    background-color: transparent;
+    box-shadow: 0 10px 60px rgb(218, 229, 255);
+    border: 1px solid rgb(159, 159, 160);
+    border-radius: 20px;
+    padding: 2rem 0.7rem 0.7rem 0.7rem;
+    text-align: center;
+    font-size: 1.125rem;
+    max-width: 320px;
+    color: #32ebcc;
+}
+
 .button-container {
     display: flex;
     flex-direction: column;

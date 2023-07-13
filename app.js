@@ -53,7 +53,7 @@ app.get('/', verifyToken, async (req, res) => {
   if (maxYear) query.where('releaseYear').lte(maxYear);
 
   const movies = await query.exec();
-  res.render('index', { movies, user: req.user }); // Pass user object to the view
+  res.render('index', { movies, user: req.user, users: null }); // Pass user object to the view
 });
 
 // route definitions

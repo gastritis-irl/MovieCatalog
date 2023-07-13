@@ -22,12 +22,14 @@ async function getMovies(formData, fetchFunction = fetch) {
   const response = await fetchFunction(`/movies?${queryParams}`, {
     method: 'GET',
   });
-  console.log(response);
-  if (!response.success) {
+  console.log('Response from fetch(/movies): ', response);
+  // console.log('Response from fetch(/movies): ', response.json());
+  console.log(response.ok);
+  if (!response.ok) {
     throw new Error('Error searching movies');
   }
 
-  return response;
+  return response.json();
 }
 
 async function showDetails(event) {
@@ -39,12 +41,18 @@ async function showDetails(event) {
 
     const { movie, user } = movieDetails.data; // access the nested movie object here
     const { genre, description, releaseYear } = movie;
-    const { username, _id } = user;
-    console.log('User who added movie:', username);
+    if (user) {
+      const { username, _id } = user;
+      console.log('User who added movie:', username);
 
-    const infoDiv = event.target.parentNode.querySelector('.extra-info');
-    infoDiv.innerHTML = `<p class="detail">Genre: ${genre}</p><p class="detail">Description: ${description}</p><p class="detail">Year: ${releaseYear}</p><p class="detail">Added by: <a href="/users/${_id}">${username}</a></p>`;
-    infoDiv.style.display = 'block';
+      const infoDiv = event.target.parentNode.querySelector('.extra-info');
+      infoDiv.innerHTML = `<p class="detail">Genre: ${genre}</p><p class="detail">Description: ${description}</p><p class="detail">Year: ${releaseYear}</p><p class="detail">Added by: <a href="/users/${_id}">${username}</a></p>`;
+      infoDiv.style.display = 'block';
+    } else {
+      const infoDiv = event.target.parentNode.querySelector('.extra-info');
+      infoDiv.innerHTML = `<p class="detail">Genre: ${genre}</p><p class="detail">Description: ${description}</p><p class="detail">Year: ${releaseYear}</p><p class="detail">User who added movie: Unknown</p>`;
+      infoDiv.style.display = 'block';
+    }
   } catch (err) {
     console.error(`Error fetching movie details: ${err}`);
   }
@@ -90,7 +98,106 @@ function createMovieDiv(movie) {
 
   movieDiv.appendChild(buttonContainer);
 
+  const deleteButton = document.createElement('button');
+  deleteButton.className = 'delete-movie';
+  deleteButton.dataset.id = movie._id;
+  deleteButton.addEventListener('click', async function deleteMovie() {
+    const movieId = this.dataset.id;
+
+    try {
+      const response = await fetch(`/movies/${movieId}`, {
+        method: 'DELETE',
+      });
+      console.log(response);
+      if (response.ok) {
+        this.parentElement.remove();
+        alert('Movie deleted successfully');
+      } else {
+        const errorData = await response.json().catch((err) => console.error(err));
+        throw new Error(errorData?.message || 'Error deleting movie');
+      }
+    } catch (error) {
+      alert('Failed to delete movie.', error);
+    }
+  });
+  // movieDiv.appendChild(deleteButton);
+
+  const span1 = document.createElement('span');
+  span1.textContent = '';
+  span1.className = 'button_lg';
+  deleteButton.appendChild(span1);
+
+  const span2 = document.createElement('span');
+  span2.textContent = '';
+  span2.className = 'button_sl';
+  span1.appendChild(span2);
+
+  const span3 = document.createElement('span');
+  span3.textContent = 'Delete Movie';
+  span3.className = 'button_text';
+  span1.appendChild(span3);
+
+  movieDiv.appendChild(deleteButton);
+
   return movieDiv;
+}
+
+function createUserDiv(user) {
+  const userDiv = document.createElement('div');
+  userDiv.className = 'movie'; // Use 'movie' class to match with movie div
+  userDiv.id = user._id;
+
+  const username = document.createElement('h3');
+  username.textContent = `Username: ${user.username}`;
+  userDiv.appendChild(username);
+
+  const role = document.createElement('p');
+  role.textContent = `Role: ${user.role}`;
+  userDiv.appendChild(role);
+
+  const button = document.createElement('button');
+  button.className = 'delete-user';
+  button.dataset.id = user._id;
+  button.addEventListener('click', async function deleteUser() {
+    const userId = this.dataset.id;
+
+    try {
+      const response = await fetch(`/users/${userId}`, {
+        method: 'DELETE',
+      });
+      console.log(response);
+      if (response.ok) {
+        window.location.reload();
+        alert('User deleted successfully');
+      } else {
+        const errorData = await response.json().catch((err) => console.error(err));
+        throw new Error(errorData?.message || 'Error deleting User');
+      }
+    } catch (error) {
+      console.log(error);
+      alert('Failed to delete user');
+    }
+  });
+  // userDiv.appendChild(button);
+
+  const span1 = document.createElement('span');
+  span1.textContent = '';
+  span1.className = 'button_lg';
+  button.appendChild(span1);
+
+  const span2 = document.createElement('span');
+  span2.textContent = '';
+  span2.className = 'button_sl';
+  span1.appendChild(span2);
+
+  const span3 = document.createElement('span');
+  span3.textContent = 'Delete User';
+  span3.className = 'button_text';
+  span1.appendChild(span3);
+
+  userDiv.appendChild(button);
+
+  return userDiv;
 }
 
 // check if the form exists before adding event listener
@@ -123,6 +230,7 @@ function displaySearchResults(results) {
   if (results.success) {
     results.data.forEach((movie) => {
       const movieDiv = createMovieDiv(movie);
+      console.log('Movie Div:', movieDiv);
       searchResultsDiv.appendChild(movieDiv);
     });
   } else {
@@ -206,6 +314,29 @@ document.querySelectorAll('.delete-movie').forEach((button) => {
   });
 });
 
+document.querySelectorAll('.delete-user').forEach((button) => {
+  button.addEventListener('click', async function deleteUser() {
+    const userId = this.dataset.id;
+
+    try {
+      const response = await fetch(`/users/${userId}`, {
+        method: 'DELETE',
+      });
+      console.log(response);
+      if (response.ok) {
+        window.location.reload();
+        alert('User deleted successfully');
+      } else {
+        const errorData = await response.json().catch((err) => console.error(err));
+        throw new Error(errorData?.message || 'Error deleting User');
+      }
+    } catch (error) {
+      console.log(error);
+      alert('Failed to delete user');
+    }
+  });
+});
+
 async function getUsers(formData, fetchFunction = fetch) {
   const queryParams = new URLSearchParams(formData).toString();
   console.log('Query Params:', queryParams);
@@ -219,39 +350,6 @@ async function getUsers(formData, fetchFunction = fetch) {
   }
 
   return response.json();
-}
-
-function createUserDiv(user) {
-  const userDiv = document.createElement('div');
-  userDiv.className = 'movie'; // Use 'movie' class to match with movie div
-  userDiv.id = user._id;
-
-  const username = document.createElement('h3'); // Use 'h3' to match with movie title
-  username.textContent = `Username: ${user.username}`;
-  userDiv.appendChild(username);
-
-  const role = document.createElement('p');
-  role.textContent = `Role: ${user.role}`;
-  userDiv.appendChild(role);
-
-  // Assuming we want to display user role similar to how movie's release year is displayed
-  const roleInfo = document.createElement('p');
-  roleInfo.textContent = `Role: ${user.role}`;
-  userDiv.appendChild(roleInfo);
-
-  // const buttonContainer = document.createElement('div');
-  // buttonContainer.className = 'button-container';
-
-  // const deleteButton = document.createElement('button');
-  // deleteButton.className = 'delete-user';
-  // deleteButton.textContent = 'Delete User';
-  // deleteButton.dataset.id = user._id;
-  // deleteButton.addEventListener('click', deleteUser);
-  // buttonContainer.appendChild(deleteButton);
-
-  // userDiv.appendChild(buttonContainer);
-
-  return userDiv;
 }
 
 const searchUsersForm = document.getElementById('search-users-form');

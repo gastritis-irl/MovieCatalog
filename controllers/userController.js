@@ -110,13 +110,17 @@ exports.getUsers = async (req, res, next) => {
   try {
     const { username, role } = req.query;
 
-    const query = await User.find();
+    let query = User.find();
 
-    if (username) query.where('username').equals(username);
-    if (role) query.where('role').equals(role);
+    if (username) query = query.where('username').equals(username);
+    if (role) query = query.where('role').equals(role);
+
+    // Only select username, role, and id (_id by default)
+    query = query.select('username role');
 
     const users = await query.exec();
-    // console.log('Found Users:', users);
+    console.log('Found Users:', users);
+
     res.json({ success: true, data: users });
   } catch (error) {
     next(error);

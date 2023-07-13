@@ -20,7 +20,7 @@ exports.getMovies = async (req, res) => {
     // }
 
     const { title, genre, minYear, maxYear } = req.query;
-    // console.log('Query:', req.query);
+    console.log('Query:', req.query);
     const query = Movie.find();
 
     if (title) query.where('title', new RegExp(title, 'i'));
@@ -29,7 +29,7 @@ exports.getMovies = async (req, res) => {
     if (maxYear) query.where('releaseYear').lte(maxYear);
 
     const movies = await query.exec();
-    // console.log('Found Movies:', movies);
+    console.log('Found Movies:', movies);
     res.json({ success: true, data: movies, user });
   } catch (error) {
     console.error(error);

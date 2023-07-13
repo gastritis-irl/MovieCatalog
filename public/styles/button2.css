@@ -1,4 +1,4 @@
-button {
+button.details {
   width: 10em;
   position: relative;
   height: 3.5em;
@@ -12,12 +12,12 @@ button {
   font-weight: bold;
 }
 
-button.onbackground {
+button.details.onbackground {
   color: rgb(71, 192, 172);
   /* box-shadow: inset 0px 0px 25px #1479EA; */
 }
 
-button::after {
+button.details::after {
   content: "";
   position: absolute;
   top: -10px;
@@ -29,7 +29,7 @@ button::after {
   transform-origin: center;
 }
 
-button::before {
+button.details::before {
   content: "";
   transform-origin: center;
   position: absolute;
@@ -41,10 +41,10 @@ button::before {
   transition: 0.5s;
 }
 
-button:hover::before, button:hover::after {
+button.details:hover::before, button.details:hover::after {
   transform: scale(1)
 }
 
-button:hover {
+button.details:hover {
   box-shadow: inset 0px 0px 25px #1479EA;
 }
